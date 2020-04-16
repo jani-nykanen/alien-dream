@@ -8,42 +8,71 @@
 import { negMod, clamp } from "./core/util.js";
 
 
+class Layer {
+
+    constructor(data, index) {
+
+        this.data = data.cloneLayer(index);
+        this.width = data.width;
+        this.height = data.height;
+    }
+}
+
+
+
 export class Stage {
 
 
     constructor(assets, index) {
 
-        let map = assets.tilemaps["map" + String(index)];
-        let bg = assets.tilemaps.background;
+        this.layers = new Array();
+        this.layers.push(new Layer(assets.tilemaps.background, 0));
+        this.layers.push(new Layer(assets.tilemaps["map" + String(index)], 0));
 
-        this.data = map.cloneLayer(0);
-        this.bgData = bg.cloneLayer(0);
-
-        this.width = map.width;
-        this.height = map.height;
-
-        this.bgWidth = bg.width;
-        this.bgHeight = bg.height;
+        this.width = this.layers[1].width;
+        this.height = this.layers[1].height;
     }
 
 
-    // Get a tile
-    getTile(x, y) {
+    // Get a tile (generic)
+    getTile(layer, x, y, loop) {
 
-        if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+        let l = this.layers[layer];
+
+        if (loop) {
+
+            x = negMod(x, l.width);
+            y = negMod(y, l.height);
+        }
+        else if (!x < 0 || y < 0 || x >= l.width || y >= l.height)
             return 0;
 
-        return this.data[y*this.width+x];
+        return l.data[y*l.width+x];
     }
 
-    
-    // Get a background tile
-    getBackgroundTile(x, y) {
 
-        x = negMod(x, this.bgWidth);
-        y = clamp(y, 0, this.bgHeight-1);
+    // Draw a tile layer
+    drawLayer(c, bmp, layer, startx, starty, endx, endy) {
 
-        return this.bgData[y*this.bgWidth+x];
+        let tid = 0;
+        let sx = 0;
+        let sy = 0;
+        for (let y = starty; y < (endy | 0); ++ y) {
+
+            for (let x = startx; x < (endx | 0); ++ x) {
+
+                tid = this.getTile(layer, x, y, true);
+                if (tid == 0) continue;
+
+                -- tid;
+                sx = tid % 16;
+                sy = (tid / 16) | 0;
+
+                c.drawBitmapRegion(bmp, 
+                    sx*16, sy*16, 16, 16,
+                    x*16, y*16);
+            }
+        }
     }
 
 
@@ -56,48 +85,9 @@ export class Stage {
         let endx = startx + ((cam.width/16) | 0) + 2;
         let endy = starty + ((cam.height/16) | 0) + 2;
 
-        c.moveTo();
-
         // Draw the background
-        let tid = 0;
-        let sx, sy;
-        for (let y = 0; y < c.height/16; ++ y) {
-
-            for (let x = 0; x < c.width/16; ++ x) {
-
-                tid = this.getBackgroundTile(x, y);
-                if (tid == 0) continue;
-
-                -- tid;
-                sx = tid % 16;
-                sy = (tid / 16) | 0;
-
-                c.drawBitmapRegion(bmp, 
-                    sx*16, sy*16, 16, 16,
-                    x*16, y*16);
-            }
-        }
-
-        // Use camera for base tiles
-        cam.use(c);
-
-        // Draw the base layer
-        tid = 0;
-        for (let y = starty; y < endy; ++ y) {
-
-            for (let x = startx; x < endx; ++ x) {
-
-                tid = this.getTile(x, y);
-                if (tid == 0) continue;
-
-                -- tid;
-                sx = tid % 16;
-                sy = (tid / 16) | 0;
-
-                c.drawBitmapRegion(bmp, 
-                    sx*16, sy*16, 16, 16,
-                    x*16, y*16);
-            }
-        }
+        this.drawLayer(c, bmp, 0, startx, starty, endx, endy);
+        // Draw the base tiles
+        this.drawLayer(c, bmp, 1, startx, starty, endx, endy);
     }
 }

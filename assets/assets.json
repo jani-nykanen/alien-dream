@@ -3,6 +3,8 @@
     "bitmaps" : [
 
         {"name": "font",  "path": "font.png"},
+        {"name": "fontSmall",  "path": "font_small.png"},
+
         {"name": "tilesetPresent",  "path": "tileset_present.png"}
     ],
 
