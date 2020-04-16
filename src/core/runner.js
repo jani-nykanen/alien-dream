@@ -97,7 +97,7 @@ export class Runner {
         // is 60 / 5 = 12)
         const MAX_REFRESH = 5;
 
-        let target = (1000.0 / 60.0) / this.ev.step;
+        let target = (1000.0 / 60.0) * this.ev.step;
 
         this.timeSum += ts - this.oldTime;
 

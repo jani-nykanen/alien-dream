@@ -12,6 +12,7 @@ import { Sprite } from "./core/sprite.js";
 
 export class GameObject {
 
+
     constructor(w, h) {
 
         this.pos = new Vector2();
@@ -43,14 +44,14 @@ export class GameObject {
 
 
     // Update
-    update(baseSpeed, ev) {
+    update(ev) {
 
         if (!this.exist) return;
 
         if (this.dying) {
 
             if (this.die == undefined ||
-                this.die(baseSpeed, ev)) {
+                this.die(ev)) {
 
                 this.dying = false;
                 this.exist = false;
@@ -60,19 +61,19 @@ export class GameObject {
 
         if (this.updateLogic != undefined) {
 
-            this.updateLogic(baseSpeed, ev);
+            this.updateLogic(ev);
         }
 
         if (this.animate != undefined) {
 
-            this.animate(baseSpeed, ev);
+            this.animate(ev);
         }
 
         this.baseMovement(ev);
 
         if (this.postMovementEvent != undefined) {
 
-            this.postMovementEvent(baseSpeed, ev);
+            this.postMovementEvent(ev);
         }
     }
     
@@ -116,25 +117,26 @@ export class GameObject {
 
 
     // Check the floor collision
-    floorCollision(x, y, width, baseSpeed, ev) {
+    floorCollision(x, y, width, ev) {
 
-        const BOTTOM_MARGIN = 4;
+        const BOTTOM_MARGIN = 2;
         const TOP_MARGIN = 1;
 
         let w = this.hitbox.x;
 
-        if (this.speed.y < baseSpeed || 
+        if (this.speed.y < 0 || 
             this.pos.x+w/2 < x || this.pos.x-w/2 >= x+width)
             return false;
 
-        if (this.pos.y > y - (TOP_MARGIN + this.speed.y) * ev.step &&
-            this.pos.y < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
+        if (this.pos.y+this.center.y > y - TOP_MARGIN * ev.step &&
+            this.pos.y+this.center.y < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
 
             if (this.floorEvent != undefined) {
 
-                this.floorEvent(baseSpeed, ev);
+                this.floorEvent(ev);
             }
-            this.pos.y = y;
+            this.pos.y = y - this.center.y;
+            
 
             return true;
         }

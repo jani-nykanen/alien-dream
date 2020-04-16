@@ -5,14 +5,16 @@
         {"name": "font",  "path": "font.png"},
         {"name": "fontSmall",  "path": "font_small.png"},
 
-        {"name": "tilesetPresent",  "path": "tileset_present.png"}
+        {"name": "tilesetPresent",  "path": "tileset_present.png"},
+        {"name": "player",  "path": "player.png"}
     ],
 
 
     "tilemapPath" : "assets/maps/",
     "tilemaps" : [
         {"name": "map1",  "path": "1.tmx"},
-        {"name": "background",  "path": "background.tmx"}
+        {"name": "background",  "path": "background.tmx"},
+        {"name": "collision",  "path": "collision.tmx"}
     ],
 
     "audioPath" : "assets/audio/",
