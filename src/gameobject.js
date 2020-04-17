@@ -125,9 +125,11 @@ export class GameObject {
         let w = this.hitbox.x;
 
         if (this.speed.y < 0 || 
-            this.pos.x+w/2 < x || this.pos.x-w/2 >= x+width)
+            this.pos.x-this.center.x+w/2 < x || 
+			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
-
+	
+		// TODO: Hitbox height need to be taken into account!
         if (this.pos.y+this.center.y > y - TOP_MARGIN * ev.step &&
             this.pos.y+this.center.y < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
 
@@ -142,7 +144,62 @@ export class GameObject {
         }
         return false;
     }
+	
+	
+	// Check the ceiling collision
+    ceilingCollision(x, y, width, ev) {
 
+        const BOTTOM_MARGIN = 1;
+        const TOP_MARGIN = 2;
+
+        let w = this.hitbox.x;
+
+        if (this.speed.y > 0 || 
+            this.pos.x-this.center.x+w/2 < x || 
+			this.pos.x-this.center.x-w/2 >= x+width)
+            return false;
+
+        if (this.pos.y-this.center.y < y + BOTTOM_MARGIN * ev.step &&
+            this.pos.y-this.center.y > y - (TOP_MARGIN - this.speed.y) * ev.step) {
+
+            if (this.ceilingEvent != undefined) {
+
+                this.ceilingEvent(ev);
+            }
+            this.pos.y = y + this.center.y;
+
+            return true;
+        }
+        return false;
+    }
+	
+	
+	// Check wall collision
+    wallCollision(x, y, height, dir, ev) {
+
+        const NEAR_MARGIN = 1;
+        const FAR_MARGIN = 2;
+
+        let h = this.hitbox.y;
+
+        if (dir*this.speed.x < 0 || 
+            this.pos.y-this.center.y+h/2 < y || 
+			this.pos.y-this.center.y-h/2 >= y+height)
+            return false;
+
+        if (this.pos.x-this.center.x > dir * (x - NEAR_MARGIN) * ev.step &&
+            this.pos.y-this.center.x < dir * (x + (FAR_MARGIN + this.speed.x)) * ev.step) {
+
+            if (this.wallEvent != undefined) {
+
+                this.wallEvent(dir, ev);
+            }
+            this.pos.x = x + this.center.x;
+
+            return true;
+        }
+        return false;
+    }
 }
 
 
