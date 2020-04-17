@@ -145,7 +145,7 @@ export class Player extends GameObject {
     }
 
 
-    // Triggered when the floor is touched
+    // Collision events
     floorEvent(ev) {
 
         const JUMP_MARGIN_TIME = 15;
@@ -154,5 +154,13 @@ export class Player extends GameObject {
         this.jumpMargin = JUMP_MARGIN_TIME;
 
         this.canJump = true;
+    }
+    wallEvent(dir, ev) {
+
+        this.speed.x = 0;
+    }
+    ceilingEvent(ev) {
+
+        this.speed.y = 0;
     }
 }

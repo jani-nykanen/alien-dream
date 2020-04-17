@@ -183,17 +183,22 @@ export class GameObject {
         const NEAR_MARGIN = 1;
         const FAR_MARGIN = 2;
 
+        const SAFE_MARGIN = 1;
+
         let h = this.hitbox.y;
 
         if (dir*this.speed.x < 0 || 
-            this.pos.y-this.center.y+h/2 < y || 
+            this.pos.y-this.center.y+h/2 < y+SAFE_MARGIN || 
 			this.pos.y-this.center.y-h/2 >= y+height)
             return false;
 
-        let middle = this.pos.x - this.center.x;
+        let middle = this.pos.x - this.center.x + this.hitbox.x/2 * dir;
 
-        if (middle > dir * (x - this.hitbox.x/2 - NEAR_MARGIN) * ev.step &&
-            middle < dir * (x - this.hitbox.x/2 + (FAR_MARGIN + this.speed.x)) * ev.step) {
+        let near = x - dir * NEAR_MARGIN * ev.step;
+        let far = x + dir * (FAR_MARGIN + Math.abs(this.speed.x)) * ev.step;
+
+        if ((dir > 0 && middle > near && middle < far) ||
+            (dir < 0 && middle < near && middle > far)) {
 
             if (this.wallEvent != undefined) {
 
