@@ -17,12 +17,14 @@ export class ObjectManager {
 
 
     // Update
-    update(stage, ev) {
+    update(stage, cam, ev) {
 
         this.player.update(ev);
         stage.objectCollision(this.player, ev);
 
         this.player.floorCollision(0, 256-8, 160, ev);
+
+        cam.followObject(this.player, ev);
     }
 
 

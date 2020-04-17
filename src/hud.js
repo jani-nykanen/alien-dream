@@ -21,6 +21,13 @@ export class HUD {
     }
 
 
+    // Update
+    update(ev) {
+
+        this.time -= (1.0/60.0 * ev.step);
+    }
+
+
     // Draw
     draw(c) {
 
@@ -38,15 +45,18 @@ export class HUD {
         }
 
         // Draw lives
-        c.drawText(c.bitmaps.fontSmall, "\"!" + createScoreString(this.lives, 2), 
+        c.drawText(c.bitmaps.fontSmall, 
+            "\"!" + createScoreString(this.lives, 2), 
             40, 144-8, 0, 0);
 
         // Draw coins
-        c.drawText(c.bitmaps.fontSmall, "%!" + createScoreString(this.coins, 2), 
+        c.drawText(c.bitmaps.fontSmall, 
+            "%!" + createScoreString(this.coins, 2), 
             80, 144-8, 0, 0);
 
         // Draw time
-        c.drawText(c.bitmaps.fontSmall, "&" + createScoreString(this.time, 3), 
+        c.drawText(c.bitmaps.fontSmall, 
+            "&" + createScoreString(Math.ceil(this.time), 3), 
             120, 144-8, 0, 0);
     }
 }

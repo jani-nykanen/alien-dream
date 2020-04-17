@@ -56,6 +56,13 @@ export class Vector2 {
     }
 
 
+    // Multiply with a real number
+    scale(s) {
+
+        return new Vector2(this.x*s, this.y*s);
+    }
+
+
     // Dot product
     static dot(a, b) {
 

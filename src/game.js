@@ -47,7 +47,9 @@ export class Game {
 
         if (ev.tr.active) return;
 
-        this.objm.update(this.stage, ev);
+        this.objm.update(this.stage, this.cam, ev);
+        this.cam.restrict(this.stage);
+        this.hud.update(ev);
     }
 
 
@@ -56,12 +58,11 @@ export class Game {
 
         c.clear(170);
 
-        this.cam.use(c);
-
         // Draw stage & background
         this.stage.draw(c, c.bitmaps.tilesetPresent, this.cam);
 
         // Draw the game objects
+        this.cam.use(c);
         this.objm.draw(c);
 
         // Draw HUD

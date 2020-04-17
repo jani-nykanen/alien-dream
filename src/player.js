@@ -10,9 +10,6 @@ import { State } from "./core/input.js";
 import { clamp } from "./core/util.js";
 
 
-const JUMP_SPEED = -2.0;
-
-
 export class Player extends GameObject {
 
 
@@ -24,10 +21,10 @@ export class Player extends GameObject {
         this.pos.y = y;
 
         this.hitbox.x = 8;
-        this.hitbox.y = 16;
+        this.hitbox.y = 20;
 
         this.friction.x = 0.1;
-        this.friction.y = 0.15;
+        this.friction.y = 0.1;
 
         this.center.x = 0;
         this.center.y = this.hitbox.y/2;
@@ -46,8 +43,9 @@ export class Player extends GameObject {
     // Update player logic
     updateLogic(ev) {
 
+        const JUMP_SPEED = -1.75;
         const HORIZONTAL_TARGET = 1.0;
-        const GRAVITY = 4.0;
+        const GRAVITY = 2.5;
         const JUMP_TIME = 16;
 
         // Determine target speed
@@ -140,7 +138,8 @@ export class Player extends GameObject {
         
         c.setColor(255, 0, 0);
         c.drawSprite(this.spr, c.bitmaps.player,
-            Math.round(this.pos.x)-8, Math.round(this.pos.y)-24 +1, 
+            Math.round(this.pos.x)-8, 
+            Math.round(this.pos.y)-24 +1, 
             this.flip);
     }
 
@@ -162,5 +161,6 @@ export class Player extends GameObject {
     ceilingEvent(ev) {
 
         this.speed.y = 0;
+        this.jumpTimer = 0;
     }
 }

@@ -34,6 +34,7 @@ export class Stage {
 
         this.width = this.layers[1].width;
         this.height = this.layers[1].height;
+
     }
 
 
@@ -51,31 +52,6 @@ export class Stage {
             return 0;
 
         return l.data[y*l.width+x];
-    }
-
-
-    // Draw a tile layer
-    drawLayer(c, bmp, layer, startx, starty, endx, endy) {
-
-        let tid = 0;
-        let sx = 0;
-        let sy = 0;
-        for (let y = starty; y < (endy | 0); ++ y) {
-
-            for (let x = startx; x < (endx | 0); ++ x) {
-
-                tid = this.getTile(layer, x, y, true);
-                if (tid == 0) continue;
-
-                -- tid;
-                sx = tid % 16;
-                sy = (tid / 16) | 0;
-
-                c.drawBitmapRegion(bmp, 
-                    sx*16, sy*16, 16, 16,
-                    x*16, y*16);
-            }
-        }
     }
 
 
@@ -132,18 +108,49 @@ export class Stage {
     }
 
 
-    // Draw the stage
-    draw(c, bmp, cam) {
+    // Draw a tile layer
+    drawLayer(c, bmp, layer, p, cam) {
 
-        let startx = ((cam.pos.x / 16) | 0) -1;
-        let starty = ((cam.pos.y / 16) | 0) -1;
+        let startx = ((p.x / 16) | 0) -1;
+        let starty = ((p.y / 16) | 0) -1;
 
         let endx = startx + ((cam.width/16) | 0) + 2;
         let endy = starty + ((cam.height/16) | 0) + 2;
 
+        let tid = 0;
+        let sx = 0;
+        let sy = 0;
+        for (let y = starty; y < (endy | 0); ++ y) {
+
+            for (let x = startx; x < (endx | 0); ++ x) {
+
+                tid = this.getTile(layer, x, y, true);
+                if (tid == 0) continue;
+
+                -- tid;
+                sx = tid % 16;
+                sy = (tid / 16) | 0;
+
+                c.drawBitmapRegion(bmp, 
+                    sx*16, sy*16, 16, 16,
+                    x*16, y*16);
+            }
+        }
+    }
+
+
+    // Draw the stage
+    draw(c, bmp, cam) {
+
+        const SCALE = 0.5;
+
         // Draw the background
-        this.drawLayer(c, bmp, 0, startx, starty, endx, endy);
+        cam.use(c, SCALE);
+        this.drawLayer(c, bmp, 0, 
+            cam.topCorner.scale(SCALE), cam);
+
         // Draw the base tiles
-        this.drawLayer(c, bmp, 1, startx, starty, endx, endy);
+        cam.use(c);
+        this.drawLayer(c, bmp, 1, cam.topCorner, cam);
     }
 }
