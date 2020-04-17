@@ -128,18 +128,19 @@ export class GameObject {
             this.pos.x-this.center.x+w/2 < x || 
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
-	
+    
+        let bottom = this.pos.y - this.center.y + this.hitbox.y/2;
+
 		// TODO: Hitbox height need to be taken into account!
-        if (this.pos.y+this.center.y > y - TOP_MARGIN * ev.step &&
-            this.pos.y+this.center.y < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
+        if (bottom > y - TOP_MARGIN * ev.step &&
+            bottom < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
 
             if (this.floorEvent != undefined) {
 
                 this.floorEvent(ev);
             }
-            this.pos.y = y - this.center.y;
+            this.pos.y = y + this.center.y - this.hitbox.y/2;
             
-
             return true;
         }
         return false;
@@ -159,14 +160,16 @@ export class GameObject {
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
 
-        if (this.pos.y-this.center.y < y + BOTTOM_MARGIN * ev.step &&
-            this.pos.y-this.center.y > y - (TOP_MARGIN - this.speed.y) * ev.step) {
+        let top = this.pos.y - this.center.y - this.hitbox.y/2;
+
+        if (top < y + BOTTOM_MARGIN * ev.step &&
+            top > y - (TOP_MARGIN - this.speed.y) * ev.step) {
 
             if (this.ceilingEvent != undefined) {
 
                 this.ceilingEvent(ev);
             }
-            this.pos.y = y + this.center.y;
+            this.pos.y = y + this.center.y + this.hitbox.y/2;
 
             return true;
         }
@@ -187,14 +190,16 @@ export class GameObject {
 			this.pos.y-this.center.y-h/2 >= y+height)
             return false;
 
-        if (this.pos.x-this.center.x > dir * (x - NEAR_MARGIN) * ev.step &&
-            this.pos.y-this.center.x < dir * (x + (FAR_MARGIN + this.speed.x)) * ev.step) {
+        let middle = this.pos.x - this.center.x;
+
+        if (middle > dir * (x - this.hitbox.x/2 - NEAR_MARGIN) * ev.step &&
+            middle < dir * (x - this.hitbox.x/2 + (FAR_MARGIN + this.speed.x)) * ev.step) {
 
             if (this.wallEvent != undefined) {
 
                 this.wallEvent(dir, ev);
             }
-            this.pos.x = x + this.center.x;
+            this.pos.x = x + this.center.x - this.hitbox.x/2 * dir;
 
             return true;
         }

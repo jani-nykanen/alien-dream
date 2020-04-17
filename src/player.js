@@ -7,6 +7,10 @@
 import { GameObject } from "./gameobject.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
+import { clamp } from "./core/util.js";
+
+
+const JUMP_SPEED = -2.0;
 
 
 export class Player extends GameObject {
@@ -45,7 +49,6 @@ export class Player extends GameObject {
         const HORIZONTAL_TARGET = 1.0;
         const GRAVITY = 4.0;
         const JUMP_TIME = 16;
-        const JUMP_SPEED = -2.0;
 
         // Determine target speed
         this.target.x = ev.input.stick.x * HORIZONTAL_TARGET;
@@ -100,9 +103,33 @@ export class Player extends GameObject {
     animate(ev) {
 
         const EPS = 0.01;
+        const AIR_DELTA = 0.5;
 
-        if (Math.abs(this.target.x) > EPS)
+        if (Math.abs(this.target.x) > EPS) 
             this.flip = this.target.x < 0;
+
+        let frame = 0;
+        if (this.canJump) {
+
+            if (Math.abs(this.target.x) > EPS) {
+
+                this.spr.animate(0, 1, 4, 12 - Math.abs(this.speed.x)*4, ev.step);
+            }
+            else {
+                
+                this.spr.setFrame(0, 0);
+            }
+        }
+        else {
+
+            frame = 1;
+            if (this.speed.y < -AIR_DELTA)
+                frame = 0;
+            else if (this.speed.y > AIR_DELTA)
+                frame = 2;
+
+            this.spr.setFrame(1, frame);
+        }
     }
 
 
@@ -113,7 +140,7 @@ export class Player extends GameObject {
         
         c.setColor(255, 0, 0);
         c.drawSprite(this.spr, c.bitmaps.player,
-            Math.round(this.pos.x)-8, Math.round(this.pos.y)-16 +1, 
+            Math.round(this.pos.x)-8, Math.round(this.pos.y)-24 +1, 
             this.flip);
     }
 
