@@ -8,6 +8,7 @@
 import { Vector2 } from "./core/vector.js";
 import { updateSpeedAxis } from "./core/util.js";
 import { Sprite } from "./core/sprite.js";
+import { Flip } from "./core/canvas.js";
 
 
 export class GameObject {
@@ -24,8 +25,11 @@ export class GameObject {
         this.center = new Vector2(0, 0);
         this.spr = new Sprite(w, h);
 
+        this.flip = Flip.None;
         this.exist = false;
         this.dying = false;
+
+        this.takeCollision = true;
     }
 
 
@@ -124,7 +128,8 @@ export class GameObject {
 
         let w = this.hitbox.x;
 
-        if (this.speed.y < 0 || 
+        if (!this.takeCollision ||
+            this.speed.y < 0 || 
             this.pos.x-this.center.x+w/2 < x || 
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
@@ -155,7 +160,8 @@ export class GameObject {
 
         let w = this.hitbox.x;
 
-        if (this.speed.y > 0 || 
+        if (!this.takeCollision ||
+            this.speed.y > 0 || 
             this.pos.x-this.center.x+w/2 < x || 
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
@@ -187,7 +193,8 @@ export class GameObject {
 
         let h = this.hitbox.y;
 
-        if (dir*this.speed.x < 0 || 
+        if (!this.takeCollision ||
+            dir*this.speed.x < 0 || 
             this.pos.y-this.center.y+h/2 < y+SAFE_MARGIN || 
 			this.pos.y-this.center.y-h/2 >= y+height)
             return false;
@@ -210,6 +217,7 @@ export class GameObject {
         }
         return false;
     }
+
 }
 
 

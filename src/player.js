@@ -8,6 +8,151 @@ import { GameObject } from "./gameobject.js";
 import { Flip } from "./core/canvas.js";
 import { State } from "./core/input.js";
 import { clamp } from "./core/util.js";
+import { Vector2 } from "./core/vector.js";
+
+
+class Boomerang extends GameObject {
+
+
+    constructor() {
+
+        super(16, 16);
+
+        this.hitbox.x = 8;
+        this.hitbox.y = 8;
+
+        this.friction.x = 0.1;
+        this.friction.y = 0.1;
+
+        this.exist = false;
+    
+        this.timer = 0;
+        this.phase = 0;
+
+        this.returnPoint = new Vector2(0, 0);
+        this.launchSpeed = 0.0;
+    }
+
+
+    // Spawn
+    spawn(x, y, speedx, speedy, time) {
+
+        const BASE_FRICTION = 0.05;
+
+        this.pos = new Vector2(x, y);
+        this.speed.x = speedx;
+        this.speed.y = speedy;
+        this.target = this.speed.clone();
+
+        this.launchSpeed = this.speed.length();
+        this.friction.x = BASE_FRICTION * this.launchSpeed;
+        this.friction.y = BASE_FRICTION * this.launchSpeed;
+
+        this.returnPoint = new Vector2(x, y);
+
+        this.timer = time;
+        this.phase = 0;
+
+        this.takeCollision = true;
+        this.exist = true;
+
+        this.flip = this.speed.x > 0 ? Flip.None : Flip.Horizontal;
+    }
+
+
+    // Update return point
+    updateReturnPoint(x, y) {
+
+        if (!this.exist) return;
+
+        this.returnPoint.x = x;
+        this.returnPoint.y = y;
+    }
+
+
+    // Update logic
+    updateLogic(ev) {
+
+        const RETURN_RANGE = 12.0;
+        const EPS = 0.01;
+
+        let t = new Vector2();
+        if (this.phase == 0) {
+
+            this.timer -= ev.step;
+            if (this.timer <= 0 || 
+                (ev.input.actions.fire2.state & State.DownOrPressed) == 0) {
+
+                ++ this.phase;
+                this.target = new Vector2();
+            }
+        } 
+        else if (this.phase == 1) {
+
+            if (this.speed.length() < EPS) {
+
+                ++ this.phase;
+            }
+        }
+        else {
+
+            t.x = this.pos.x - this.returnPoint.x;
+            t.y = this.pos.y - this.returnPoint.y;
+            t.normalize();
+
+            this.target.x = -t.x * this.launchSpeed;
+            this.target.y = -t.y * this.launchSpeed;
+
+            if (Math.hypot(this.pos.x-this.returnPoint.x, 
+                this.pos.y-this.returnPoint.y) < RETURN_RANGE) {
+
+                this.exist = false;
+            }
+        }
+
+        this.takeCollision = this.phase < 2;
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        const ANIM_SPEED = 4;
+
+        this.spr.animate(0, 0, 3, ANIM_SPEED, ev.step);
+    }
+
+
+    // Collision events
+    floorEvent(ev) {
+
+        this.phase = 2;
+        this.speed.y = 0;
+    }
+    wallEvent(dir, ev) {
+
+        this.phase = 2;
+        this.speed.x = 0;
+    }
+    ceilingEvent(ev) {
+
+        this.phase = 2;
+        this.speed.y = 0;
+    }
+
+
+    // Draw 
+    draw(c) {
+
+        if (!this.exist) return;
+        
+        c.drawSprite(this.spr, c.bitmaps.boomerang,
+            Math.round(this.pos.x)-8, 
+            Math.round(this.pos.y)-8, 
+            this.flip);
+    }
+}
+
 
 
 export class Player extends GameObject {
@@ -37,6 +182,26 @@ export class Player extends GameObject {
         this.flip = Flip.None;
         this.canJump = false;
         this.exist = true;
+
+        this.boomerang = new Boomerang();
+    }
+
+
+    // Spawn a boomerange
+    spawnBoomerang() {
+
+        const THROW_SPEED = 2.5;
+        const BOOMERANGE_TIME = 15;
+
+        let dir = this.flip == Flip.None ? 1 : -1;
+
+        this.boomerang.spawn(
+            this.pos.x + 8 * dir,
+            this.pos.y - 12,
+            THROW_SPEED * dir + this.speed.x/2,
+            this.speed.y/2,
+            BOOMERANGE_TIME
+        );
     }
 
 
@@ -72,6 +237,13 @@ export class Player extends GameObject {
             this.jumpTimer = 0;
         }
 
+        // Create a boomerang
+        if (!this.boomerang.exist &&
+            ev.input.actions.fire2.state == State.Pressed) {
+
+            this.spawnBoomerang();
+        }
+
         // Update jump timers
         if (this.jumpTimer > 0.0) {
 
@@ -82,6 +254,12 @@ export class Player extends GameObject {
 
             this.jumpMargin -= ev.step;
         }
+
+        // Update boomerang
+        this.boomerang.update(ev);
+        this.boomerang.updateReturnPoint(
+            this.pos.x, this.pos.y-12
+        );
     }
 
 
@@ -136,11 +314,13 @@ export class Player extends GameObject {
 
         if (!this.exist) return;
         
-        c.setColor(255, 0, 0);
         c.drawSprite(this.spr, c.bitmaps.player,
             Math.round(this.pos.x)-8, 
             Math.round(this.pos.y)-24 +1, 
             this.flip);
+
+        // Draw the boomerang
+        this.boomerang.draw(c);
     }
 
 

@@ -21,6 +21,7 @@ export class ObjectManager {
 
         this.player.update(ev);
         stage.objectCollision(this.player, ev);
+        stage.objectCollision(this.player.boomerang, ev);
 
         this.player.floorCollision(0, 256-8, 160, ev);
 

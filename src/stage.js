@@ -78,6 +78,8 @@ export class Stage {
         let endx = startx + MARGIN*2;
         let endy = starty + MARGIN*2;
 
+        
+
         let sindex = 0;
         for (let y = starty; y < endy; ++ y) {
 
