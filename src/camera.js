@@ -24,7 +24,7 @@ export class Camera {
 
 
     // Follow an object
-    followObject(o, ev) {
+    followObject(o, stage, ev) {
 
         const LOOK_RANGE_X = 24;
         const LOOK_SPEED_X = 0.5;
@@ -34,6 +34,7 @@ export class Camera {
         this.pos.x = o.pos.x;
         this.pos.x -= o.center.x;
 
+        // Vertical
         let y = o.pos.y - o.center.y;
         if (Math.abs(this.pos.y - y) > RANGE_Y) {
 
@@ -41,11 +42,23 @@ export class Camera {
                 (Math.abs(y - this.pos.y) - RANGE_Y);
         }
 
-        this.lookTarget.x = LOOK_RANGE_X * o.target.x;
-        this.look.x = updateSpeedAxis(this.look.x, 
-            this.lookTarget.x, LOOK_SPEED_X * ev.step); 
-            
-        this.pos.x += this.look.x;
+        // Horizontal
+        if (this.pos.x > this.width/2 &&
+            this.pos.x < stage.width*16 - this.width/2) {
+
+            this.lookTarget.x = LOOK_RANGE_X * o.target.x;
+            this.look.x = updateSpeedAxis(this.look.x, 
+                this.lookTarget.x, LOOK_SPEED_X * ev.step); 
+
+            this.pos.x += this.look.x;
+        }
+        else {
+
+            this.look.x = 0;
+        }
+
+        this.restrict(stage);
+        this.topCorner = this.getTopCorner();
     }
 
 

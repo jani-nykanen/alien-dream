@@ -43,17 +43,16 @@ export class Stage {
 
         let baseMap = assets.tilemaps["map" + String(index)];
 
-        this.layers = new Array();
-        this.layers.push(new Layer(assets.tilemaps.background, 0));
-        this.layers.push(new Layer(baseMap, 0));
-
+        // Create layers
+        this.background = new Layer(assets.tilemaps.background, 0);
+        this.base = new Layer(baseMap, 0);
         this.objects = new Layer(baseMap, 1);
 
         this.collisionData = assets.tilemaps.collision.cloneLayer(0);
         this.collisionData[-1] = 0;
 
-        this.width = this.layers[1].width;
-        this.height = this.layers[1].height;
+        this.width = this.base.width;
+        this.height = this.base.height;
 
     }
 
@@ -61,19 +60,21 @@ export class Stage {
     // Get a tile (generic)
     getTile(layer, x, y, loop) {
 
-        return this.layers[layer].getValue(x, y, loop);
+        return layer.getValue(x, y, loop);
     }
 
 
     // Get solid tile info
     getSolidIndex(x, y) {
 
-        return this.collisionData[this.getTile(1, x, y, false)-1];
+        return this.collisionData[this.getTile(this.base, x, y, false)-1];
     }
 
 
     // Object collision
-    objectCollision(o, ev) {
+    objectCollision(o, objm, ev) {
+
+        if (!o.exist || o.dying) return;
 
         const MARGIN = 2;
 
@@ -104,10 +105,12 @@ export class Stage {
                 }
                 if (CEILING.includes(sindex)) {
 
-                    if (o.ceilingCollision(x*16, y*16+16, 16, ev) &&
+                    if (objm != null &&
+                        o.ceilingCollision(x*16, y*16+16, 16, ev) &&
                         SPECIAL_1.includes(sindex)) {
 
-                        ++ this.layers[1].data[y*this.width+x];
+                        ++ this.base.data[y*this.width+x];
+                        objm.spawnItem(Coin, x*16+8, y*16)
                     }
                 }
                 if (WALL_LEFT.includes(sindex)) {
@@ -183,11 +186,11 @@ export class Stage {
 
         // Draw the background
         cam.use(c, SCALE);
-        this.drawLayer(c, bmp, 0, 
+        this.drawLayer(c, bmp, this.background, 
             cam.topCorner.scale(SCALE), cam);
 
         // Draw the base tiles
         cam.use(c);
-        this.drawLayer(c, bmp, 1, cam.topCorner, cam);
+        this.drawLayer(c, bmp, this.base, cam.topCorner, cam);
     }
 }

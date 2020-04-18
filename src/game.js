@@ -49,7 +49,6 @@ export class Game {
         if (ev.tr.active) return;
 
         this.objm.update(this.stage, this.cam, this.hud, ev);
-        this.cam.restrict(this.stage);
         this.hud.update(ev);
     }
 

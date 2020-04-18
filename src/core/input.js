@@ -142,7 +142,8 @@ export class InputManager {
     // Update input states
     update() {
 
-        const EPS = 0.01;
+        const EPS1 = 0.01;
+        const EPS2 = 0.1;
 
         this.anyPressed = false;
 
@@ -188,8 +189,8 @@ export class InputManager {
         // behavior
         // this.stick.normalize();
 
-        if (Math.hypot(this.stick.x, this.stick.y) < EPS &&
-            Math.hypot(this.pad.stick.x, this.pad.stick.y) > EPS) {
+        if (Math.hypot(this.stick.x, this.stick.y) < EPS1 &&
+            Math.hypot(this.pad.stick.x, this.pad.stick.y) > EPS2) {
 
             this.stick.x = this.pad.stick.x;
             this.stick.y = this.pad.stick.y;

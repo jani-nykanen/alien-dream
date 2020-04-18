@@ -27,11 +27,16 @@ export class Collectable extends GameObject {
     // Spawn a jumping item
     spawn(x, y, jumpSpeed) {
         
-        // const SPAWN_WAIT = 10;
+        const GRAVITY = 2.0;
 
         this.pos = new Vector2(x, y);
 
         this.exist = true;
+
+        this.friction.y = 0.1;
+
+        this.target.y = GRAVITY;
+        this.speed.y = jumpSpeed;
     }
 
     
@@ -59,7 +64,7 @@ export class Collectable extends GameObject {
     // Draw
     draw(c) {
 
-        if (!this.exist) return;
+        if (!this.exist || !this.inCamera) return;
         
         c.drawSprite(this.spr, c.bitmaps.coin,
             Math.round(this.pos.x-8), Math.round(this.pos.y-8));

@@ -31,6 +31,7 @@ export class GameObject {
         this.dying = false;
 
         this.takeCollision = true;
+        this.inCamera = true;
     }
 
 
@@ -65,6 +66,8 @@ export class GameObject {
             }
             return;
         }
+        
+        if (!this.inCamera) return;
 
         if (this.updateLogic != undefined) {
 
@@ -221,6 +224,21 @@ export class GameObject {
             return true;
         }
         return false;
+    }
+
+
+    // Is in camera
+    checkIfInCamera(cam) {
+
+        let topx = this.pos.x+this.center.x - this.spr.width/2;
+        let topy = this.pos.y+this.center.y - this.spr.height/2;
+        let bottomx = topx + this.spr.width;
+        let bottomy = topy + this.spr.height;
+
+        this.inCamera = (bottomx >= cam.topCorner.x &&
+            bottomy >= cam.topCorner.y &&
+            topx <= cam.topCorner.x + cam.width &&
+            topy <= cam.topCorner.y + cam.height);
     }
 
 }
