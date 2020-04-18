@@ -17,6 +17,7 @@ export class GameObject {
     constructor(w, h) {
 
         this.pos = new Vector2();
+        this.oldPos = this.pos.clone();
         this.speed = new Vector2();
         this.target = new Vector2();
         this.friction = new Vector2(1, 1);
@@ -51,6 +52,8 @@ export class GameObject {
     update(ev) {
 
         if (!this.exist) return;
+
+        this.oldPos = this.pos.clone();
 
         if (this.dying) {
 
@@ -199,13 +202,15 @@ export class GameObject {
 			this.pos.y-this.center.y-h/2 >= y+height)
             return false;
 
-        let middle = this.pos.x - this.center.x + this.hitbox.x/2 * dir;
+        let shift = -this.center.x + this.hitbox.x/2 * dir;
+        let middle = this.pos.x + shift;
+        let middleOld = this.oldPos.x + shift;
 
         let near = x - dir * NEAR_MARGIN * ev.step;
         let far = x + dir * (FAR_MARGIN + Math.abs(this.speed.x)) * ev.step;
 
-        if ((dir > 0 && middle > near && middle < far) ||
-            (dir < 0 && middle < near && middle > far)) {
+        if ((dir > 0 && middle > near && middleOld < far) ||
+            (dir < 0 && middle < near && middleOld > far)) {
 
             if (this.wallEvent != undefined) {
 

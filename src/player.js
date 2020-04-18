@@ -30,18 +30,22 @@ class Boomerang extends GameObject {
         this.phase = 0;
 
         this.returnPoint = new Vector2(0, 0);
+        this.startSpeed = new Vector2(0, 0);
         this.launchSpeed = 0.0;
     }
 
 
     // Spawn
-    spawn(x, y, speedx, speedy, time) {
+    spawn(centerx, x, y, speedx, speedy, time) {
 
         const BASE_FRICTION = 0.05;
 
         this.pos = new Vector2(x, y);
+        this.oldPos = new Vector2(centerx, y);
+
         this.speed.x = speedx;
         this.speed.y = speedy;
+        this.startSpeed = this.speed.clone();
         this.target = this.speed.clone();
 
         this.launchSpeed = this.speed.length();
@@ -74,7 +78,6 @@ class Boomerang extends GameObject {
     updateLogic(ev) {
 
         const RETURN_RANGE = 12.0;
-        const EPS = 0.01;
 
         let t = new Vector2();
         if (this.phase == 0) {
@@ -83,18 +86,10 @@ class Boomerang extends GameObject {
             if (this.timer <= 0 || 
                 (ev.input.actions.fire2.state & State.DownOrPressed) == 0) {
 
-                ++ this.phase;
-                this.target = new Vector2();
+                this.phase = 1;
             }
         } 
-        else if (this.phase == 1) {
-
-            if (this.speed.length() < EPS) {
-
-                ++ this.phase;
-            }
-        }
-        else {
+        else if (this.phase >= 1) {
 
             t.x = this.pos.x - this.returnPoint.x;
             t.y = this.pos.y - this.returnPoint.y;
@@ -102,6 +97,15 @@ class Boomerang extends GameObject {
 
             this.target.x = -t.x * this.launchSpeed;
             this.target.y = -t.y * this.launchSpeed;
+
+            if (this.phase == 1) {
+
+                if (Math.sign(this.startSpeed.x) != Math.sign(this.speed.x) ||
+                    Math.sign(this.startSpeed.y) != Math.sign(this.speed.y)) {
+
+                    this.phase = 2;
+                }
+            }
 
             if (Math.hypot(this.pos.x-this.returnPoint.x, 
                 this.pos.y-this.returnPoint.y) < RETURN_RANGE) {
@@ -164,6 +168,7 @@ export class Player extends GameObject {
 
         this.pos.x = x;
         this.pos.y = y;
+        this.oldPos = this.pos.clone();
 
         this.hitbox.x = 8;
         this.hitbox.y = 20;
@@ -184,6 +189,7 @@ export class Player extends GameObject {
         this.exist = true;
 
         this.boomerang = new Boomerang();
+        this.throwAnimTimer = 0;
     }
 
 
@@ -192,16 +198,19 @@ export class Player extends GameObject {
 
         const THROW_SPEED = 2.5;
         const BOOMERANGE_TIME = 15;
+        const THROW_ANIM_TIME = 30;
 
         let dir = this.flip == Flip.None ? 1 : -1;
 
-        this.boomerang.spawn(
+        this.boomerang.spawn(this.pos.x,
             this.pos.x + 8 * dir,
-            this.pos.y - 12,
+            this.pos.y - 8,
             THROW_SPEED * dir + this.speed.x/2,
             this.speed.y/2,
             BOOMERANGE_TIME
         );
+
+        this.throwAnimTimer = THROW_ANIM_TIME;
     }
 
 
@@ -237,6 +246,12 @@ export class Player extends GameObject {
             this.jumpTimer = 0;
         }
 
+        // Update boomerang
+        this.boomerang.update(ev);
+        this.boomerang.updateReturnPoint(
+            this.pos.x, this.pos.y-8
+        );
+
         // Create a boomerang
         if (!this.boomerang.exist &&
             ev.input.actions.fire2.state == State.Pressed) {
@@ -244,7 +259,7 @@ export class Player extends GameObject {
             this.spawnBoomerang();
         }
 
-        // Update jump timers
+        // Update timers
         if (this.jumpTimer > 0.0) {
 
             this.jumpTimer -= ev.step;
@@ -254,12 +269,12 @@ export class Player extends GameObject {
 
             this.jumpMargin -= ev.step;
         }
+        if (this.throwAnimTimer > 0) {
 
-        // Update boomerang
-        this.boomerang.update(ev);
-        this.boomerang.updateReturnPoint(
-            this.pos.x, this.pos.y-12
-        );
+            this.throwAnimTimer -= ev.step;
+            if (!this.boomerang.exist)
+                this.throwAnimTimer = 0;
+        }
     }
 
 
@@ -314,10 +329,18 @@ export class Player extends GameObject {
 
         if (!this.exist) return;
         
+        // Draw base sprite
+        let frame = this.spr.frame;
+        if (this.throwAnimTimer > 0) {
+
+            this.spr.frame += 5;
+        }
         c.drawSprite(this.spr, c.bitmaps.player,
             Math.round(this.pos.x)-8, 
             Math.round(this.pos.y)-24 +1, 
             this.flip);
+
+        this.spr.frame = frame;
 
         // Draw the boomerang
         this.boomerang.draw(c);
