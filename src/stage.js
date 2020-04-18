@@ -6,6 +6,7 @@
  */
 
 import { negMod, clamp } from "./core/util.js";
+import { Coin } from "./collectable.js";
 
 
 class Layer {
@@ -16,6 +17,21 @@ class Layer {
         this.width = data.width;
         this.height = data.height;
     }
+
+
+    // Get value
+    getValue(x, y, loop) {
+
+        if (loop) {
+
+            x = negMod(x, this.width);
+            y = negMod(y, this.height);
+        }
+        else if (x < 0 || y < 0 || x >= this.width || y >= this.height)
+            return 0;
+
+        return this.data[y*this.width+x];
+    }
 }
 
 
@@ -25,9 +41,13 @@ export class Stage {
 
     constructor(assets, index) {
 
+        let baseMap = assets.tilemaps["map" + String(index)];
+
         this.layers = new Array();
         this.layers.push(new Layer(assets.tilemaps.background, 0));
-        this.layers.push(new Layer(assets.tilemaps["map" + String(index)], 0));
+        this.layers.push(new Layer(baseMap, 0));
+
+        this.objects = new Layer(baseMap, 1);
 
         this.collisionData = assets.tilemaps.collision.cloneLayer(0);
         this.collisionData[-1] = 0;
@@ -41,17 +61,7 @@ export class Stage {
     // Get a tile (generic)
     getTile(layer, x, y, loop) {
 
-        let l = this.layers[layer];
-
-        if (loop) {
-
-            x = negMod(x, l.width);
-            y = negMod(y, l.height);
-        }
-        else if (x < 0 || y < 0 || x >= l.width || y >= l.height)
-            return 0;
-
-        return l.data[y*l.width+x];
+        return this.layers[layer].getValue(x, y, loop);
     }
 
 
@@ -67,18 +77,17 @@ export class Stage {
 
         const MARGIN = 2;
 
-        const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14];
-        const CEILING = [2, 4, 8, 9, 11, 12, 13, 14];
-        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14];
-        const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14];
+        const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15];
+        const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15];
+        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15];
+        const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15];
+        const SPECIAL_1 = [15];
 
         let startx = Math.floor(o.pos.x / 16) - MARGIN;
         let starty = Math.floor(o.pos.y / 16) - MARGIN;
 
         let endx = startx + MARGIN*2;
         let endy = starty + MARGIN*2;
-
-        
 
         let sindex = 0;
         for (let y = starty; y < endy; ++ y) {
@@ -95,7 +104,11 @@ export class Stage {
                 }
                 if (CEILING.includes(sindex)) {
 
-                    o.ceilingCollision(x*16, y*16+16, 16, ev);
+                    if (o.ceilingCollision(x*16, y*16+16, 16, ev) &&
+                        SPECIAL_1.includes(sindex)) {
+
+                        ++ this.layers[1].data[y*this.width+x];
+                    }
                 }
                 if (WALL_LEFT.includes(sindex)) {
 
@@ -104,6 +117,28 @@ export class Stage {
                 if (WALL_RIGHT.includes(sindex)) {
 
                     o.wallCollision(x*16+16, y*16, 16, -1, ev);
+                }
+            }
+        }
+    }
+
+
+    // Parse objects
+    parseObjects(objm) {
+
+        for (let y = 0; y < this.objects.height; ++ y) {
+
+            for (let x = 0; x < this.objects.width; ++ x) {
+
+                switch(this.objects.getValue(x, y) - 256) {
+
+                // Coin 
+                case 2: 
+                    objm.addItem(Coin, x*16, y*16);
+                    break;
+
+                default:
+                    break;
                 }
             }
         }

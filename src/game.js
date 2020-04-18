@@ -39,6 +39,7 @@ export class Game {
         this.cam = new Camera(0, this.stage.height*16-144, 160, 144);
         this.hud = new HUD();
         this.objm = new ObjectManager(this.stage);
+        this.stage.parseObjects(this.objm);
     }
 
 
@@ -47,7 +48,7 @@ export class Game {
 
         if (ev.tr.active) return;
 
-        this.objm.update(this.stage, this.cam, ev);
+        this.objm.update(this.stage, this.cam, this.hud, ev);
         this.cam.restrict(this.stage);
         this.hud.update(ev);
     }

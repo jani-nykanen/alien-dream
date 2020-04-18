@@ -27,25 +27,25 @@ export class Camera {
     followObject(o, ev) {
 
         const LOOK_RANGE_X = 24;
-        const LOOK_RANGE_Y = 8;
         const LOOK_SPEED_X = 0.5;
-        const LOOK_SPEED_Y = 0.25;
 
-        this.pos = o.pos.clone();
+        const RANGE_Y = 16;
+
+        this.pos.x = o.pos.x;
         this.pos.x -= o.center.x;
-        this.pos.y -= o.center.y;
+
+        let y = o.pos.y - o.center.y;
+        if (Math.abs(this.pos.y - y) > RANGE_Y) {
+
+            this.pos.y += Math.sign(y - this.pos.y) * 
+                (Math.abs(y - this.pos.y) - RANGE_Y);
+        }
 
         this.lookTarget.x = LOOK_RANGE_X * o.target.x;
-        this.lookTarget.y = this.canJump ? 0 : LOOK_RANGE_Y * o.speed.y;
-
         this.look.x = updateSpeedAxis(this.look.x, 
             this.lookTarget.x, LOOK_SPEED_X * ev.step); 
-
-        this.look.y = updateSpeedAxis(this.look.y, 
-            this.lookTarget.y, LOOK_SPEED_Y * ev.step);     
-
+            
         this.pos.x += this.look.x;
-        this.pos.y += this.look.y;
     }
 
 
@@ -57,16 +57,15 @@ export class Camera {
             this.look.x -= (this.pos.x - this.width/2);
             this.pos.x = this.width/2;
         }
-        if (this.pos.y < this.height/2) {
-
-            this.look.y -= (this.pos.y - this.height/2);
-            this.pos.y = this.height/2;
-        }
         if (this.pos.x + this.width/2 > stage.width*16) {
 
             this.look.x -= this.pos.x - (stage.width*16 - this.width/2);
             this.pos.x = stage.width*16 - this.width/2;
         }
+
+        if (this.pos.y < this.height/2) 
+            this.pos.y = this.height/2;
+        
         if (this.pos.y + this.height/2 > stage.height*16)
             this.pos.y = stage.height*16 - this.height/2;   
  

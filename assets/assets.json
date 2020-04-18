@@ -6,6 +6,7 @@
         {"name": "fontSmall",  "path": "font_small.png"},
 
         {"name": "tilesetPresent",  "path": "tileset_present.png"},
+        {"name": "coin",  "path": "coin.png"},
         {"name": "boomerang",  "path": "boomerang.png"},
         {"name": "player",  "path": "player.png"}
     ],

@@ -11,11 +11,10 @@ export class HUD {
 
     constructor() {
 
-        this.coins = 87;
+        this.coins = 0;
         this.lives = 5;
-
         this.maxHealth = 3;
-        this.health = this.maxHealth -1;
+        this.health = this.maxHealth;
 
         this.time = 300;
     }
@@ -25,6 +24,16 @@ export class HUD {
     update(ev) {
 
         this.time -= (1.0/60.0 * ev.step);
+    }
+
+
+    // Update stats
+    updateStats(player) {
+
+        this.coins = player.coins;
+        this.health = player.health;
+        this.maxHealth = player.maxHealth;
+        this.lives = player.lives;
     }
 
 

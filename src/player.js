@@ -190,6 +190,12 @@ export class Player extends GameObject {
 
         this.boomerang = new Boomerang();
         this.throwAnimTimer = 0;
+
+        // States
+        this.lives = 5;
+        this.maxHealth = 3;
+        this.health = 3;
+        this.coins = 0;
     }
 
 

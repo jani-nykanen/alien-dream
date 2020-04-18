@@ -91,13 +91,13 @@ export class GameObject {
         if (!this.exist || !o.exist ||
             this.dying || o.dying) return false;
         
-        let px = this.pos.x + this.center.x;
-        let py = this.pos.y + this.center.y;
+        let px = this.pos.x - this.center.x;
+        let py = this.pos.y - this.center.y;
         let pw = this.hitbox.x/2;
         let ph = this.hitbox.y/2;
         
-        let ox = o.pos.x + o.center.x;
-        let oy = o.pos.y + o.center.y;
+        let ox = o.pos.x - o.center.x;
+        let oy = o.pos.y - o.center.y;
         let ow = o.hitbox.x/2;
         let oh = o.hitbox.y/2;
         
