@@ -9,16 +9,19 @@ import { Vector2 } from "./core/vector.js";
 
 
 export class Collectable extends GameObject {
+
  
- 
-    constructor(x, y) {
+    constructor(x, y, row) {
         
         super(16, 16);
 
         this.pos.x = x;
         this.pos.y = y;
 
-        this.hitbox = new Vector2(12, 12);
+        this.hitbox.x = 12;
+        this.hitbox.y = 12;
+
+        this.spr.row = row;
 
         this.exist = true;
     }   
@@ -28,6 +31,7 @@ export class Collectable extends GameObject {
     spawn(x, y, jumpSpeed) {
         
         const GRAVITY = 2.0;
+        const SPAWN_TIME = 10;
 
         this.pos = new Vector2(x, y);
 
@@ -37,6 +41,18 @@ export class Collectable extends GameObject {
 
         this.target.y = GRAVITY;
         this.speed.y = jumpSpeed;
+
+        this.spawnTimer = SPAWN_TIME;
+    }
+
+
+    // Logic
+    updateLogic(ev) {
+
+        if (this.spawnTimer > 0) {
+
+            this.spawnTimer -= ev.step;
+        }
     }
 
 
@@ -45,7 +61,7 @@ export class Collectable extends GameObject {
         
         const ANIM_SPEED = 8;
         
-        this.spr.animate(0, 0, 3, ANIM_SPEED, ev.step);;
+        this.spr.animate(this.spr.row, 0, 3, ANIM_SPEED, ev.step);;
     }
 
 
@@ -56,12 +72,15 @@ export class Collectable extends GameObject {
     // Hostile collision
     hostileCollision(o, ev) {
         
+       if (this.spawnTimer > 0) return;
+
         this.dying = true;
 
         if (this.deathEvent != undefined) {
 
             this.deathEvent(o, ev);
         }
+    
     }
 
     
@@ -87,12 +106,28 @@ export class Coin extends Collectable {
 
     constructor(x, y) {
 
-        super(x, y);
+        super(x, y, 0);
     }
 
 
     deathEvent(o, ev) {
 
         ++ o.coins;
+    }
+}
+
+
+export class Heart extends Collectable {
+
+
+    constructor(x, y) {
+
+        super(x, y, 1);
+    }
+
+
+    deathEvent(o, ev) {
+
+        o.health = Math.min(o.maxHealth, o.health+1);
     }
 }

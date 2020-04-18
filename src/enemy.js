@@ -39,7 +39,7 @@ export class Enemy extends GameObject {
     // Die
     die(ev) {
 
-        const DEATH_SPEED = 6;
+        const DEATH_SPEED = 5;
 
         this.spr.animate(0, 0, 4, DEATH_SPEED, ev.step);
         return this.spr.frame >= 4;
@@ -69,7 +69,7 @@ export class Enemy extends GameObject {
     // Hostile collision
     hostileCollision(o, ev) {
 
-        const HURT_MARGIN = 4;
+        const HURT_MARGIN = 8;
         const JUMP_SPEED_Y = -2.0;
         const JUMP_MARGIN = 16;
 
@@ -86,6 +86,10 @@ export class Enemy extends GameObject {
     
                 o.speed.y = JUMP_SPEED_Y;
                 o.stompMargin = JUMP_MARGIN;
+            }
+            else {
+
+                o.hurt(1, ev);
             }
         }
         else {
@@ -123,7 +127,7 @@ export class Walker extends Enemy {
         this.target.y = 2;
         this.center.y = -2;
 
-        this.hitbox.x = 8;
+        this.colbox.x = 4;
 
         this.target.x = (((x/16)|0) % 2 == 0 ? 1 : -1) * SPEED;
     }

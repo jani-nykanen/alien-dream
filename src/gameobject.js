@@ -26,6 +26,9 @@ export class GameObject {
         this.center = new Vector2(0, 0);
         this.spr = new Sprite(w, h);
 
+        // In general these two things are the same
+        this.colbox = this.hitbox;
+
         this.flip = Flip.None;
         this.exist = false;
         this.dying = false;
@@ -103,13 +106,13 @@ export class GameObject {
         
         let px = this.pos.x - this.center.x;
         let py = this.pos.y - this.center.y;
-        let pw = this.hitbox.x/2;
-        let ph = this.hitbox.y/2;
+        let pw = this.colbox.x/2;
+        let ph = this.colbox.y/2;
         
         let ox = o.pos.x - o.center.x;
         let oy = o.pos.y - o.center.y;
-        let ow = o.hitbox.x/2;
-        let oh = o.hitbox.y/2;
+        let ow = o.colbox.x/2;
+        let oh = o.colbox.y/2;
         
         if (px + pw > ox - ow && 
             px - pw < ox + ow && 
@@ -139,7 +142,7 @@ export class GameObject {
         const BOTTOM_MARGIN = 2;
         const TOP_MARGIN = 1;
 
-        let w = this.hitbox.x;
+        let w = this.colbox.x;
 
         if (!this.takeCollision ||
             this.speed.y < 0 || 
@@ -147,7 +150,7 @@ export class GameObject {
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
     
-        let bottom = this.pos.y - this.center.y + this.hitbox.y/2;
+        let bottom = this.pos.y - this.center.y + this.colbox.y/2;
         
         if (bottom > y - TOP_MARGIN * ev.step &&
             bottom < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
@@ -156,7 +159,7 @@ export class GameObject {
 
                 this.floorEvent(ev);
             }
-            this.pos.y = y + this.center.y - this.hitbox.y/2;
+            this.pos.y = y + this.center.y - this.colbox.y/2;
             
             return true;
         }
@@ -170,7 +173,7 @@ export class GameObject {
         const BOTTOM_MARGIN = 1;
         const TOP_MARGIN = 2;
 
-        let w = this.hitbox.x;
+        let w = this.colbox.x;
 
         if (!this.takeCollision ||
             this.speed.y > 0 || 
@@ -178,7 +181,7 @@ export class GameObject {
 			this.pos.x-this.center.x-w/2 >= x+width)
             return false;
 
-        let top = this.pos.y - this.center.y - this.hitbox.y/2;
+        let top = this.pos.y - this.center.y - this.colbox.y/2;
 
         if (top < y + BOTTOM_MARGIN * ev.step &&
             top > y - (TOP_MARGIN - this.speed.y) * ev.step) {
@@ -187,7 +190,7 @@ export class GameObject {
 
                 this.ceilingEvent(ev);
             }
-            this.pos.y = y + this.center.y + this.hitbox.y/2;
+            this.pos.y = y + this.center.y + this.colbox.y/2;
 
             return true;
         }
@@ -203,7 +206,7 @@ export class GameObject {
 
         const SAFE_MARGIN = 1;
 
-        let h = this.hitbox.y;
+        let h = this.colbox.y;
 
         if (!this.takeCollision ||
             dir*this.speed.x < 0 || 
@@ -211,7 +214,7 @@ export class GameObject {
 			this.pos.y-this.center.y-h/2 >= y+height)
             return false;
 
-        let shift = -this.center.x + this.hitbox.x/2 * dir;
+        let shift = -this.center.x + this.colbox.x/2 * dir;
         let middle = this.pos.x + shift;
         let middleOld = this.oldPos.x + shift;
 
@@ -225,7 +228,7 @@ export class GameObject {
 
                 this.wallEvent(dir, ev);
             }
-            this.pos.x = x + this.center.x - this.hitbox.x/2 * dir;
+            this.pos.x = x + this.center.x - this.colbox.x/2 * dir;
 
             return true;
         }

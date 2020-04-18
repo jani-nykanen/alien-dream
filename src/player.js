@@ -21,6 +21,9 @@ class Boomerang extends GameObject {
         this.hitbox.x = 8;
         this.hitbox.y = 8;
 
+        this.colbox.x = 4;
+        this.colbox.y = 4;
+
         this.friction.x = 0.1;
         this.friction.y = 0.1;
 
@@ -281,6 +284,10 @@ export class Player extends GameObject {
 
             this.stompMargin -= ev.step;
         }
+        if (this.hurtTimer > 0) {
+
+            this.hurtTimer -= ev.step;
+        }
         if (this.throwAnimTimer > 0) {
 
             this.throwAnimTimer -= ev.step;
@@ -299,6 +306,18 @@ export class Player extends GameObject {
 
             this.hurtTimer -= ev.step;
         }
+    }
+
+
+    // Hurt
+    hurt(amount, ev) {
+
+        const HURT_TIME = 60;
+
+        if (this.hurtTimer > 0) return;
+
+        this.hurtTimer = HURT_TIME;
+        this.health = Math.max(0, this.health-amount);
     }
 
 
@@ -341,18 +360,22 @@ export class Player extends GameObject {
 
         if (!this.exist) return;
         
-        // Draw base sprite
+        // Draw the base sprite
         let frame = this.spr.frame;
-        if (this.throwAnimTimer > 0) {
+        if (this.hurtTimer <= 0 || 
+            Math.floor(this.hurtTimer/4) % 2 == 1) {
 
-            this.spr.frame += 5;
+            if (this.throwAnimTimer > 0) {
+
+                this.spr.frame += 5;
+            }
+            c.drawSprite(this.spr, c.bitmaps.player,
+                Math.round(this.pos.x)-8, 
+                Math.round(this.pos.y)-24 +1, 
+                this.flip);
+
+            this.spr.frame = frame;
         }
-        c.drawSprite(this.spr, c.bitmaps.player,
-            Math.round(this.pos.x)-8, 
-            Math.round(this.pos.y)-24 +1, 
-            this.flip);
-
-        this.spr.frame = frame;
 
         // Draw the boomerang
         this.boomerang.draw(c);

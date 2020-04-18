@@ -6,6 +6,7 @@
 
 import { Player } from "./player.js";
 import { newGameObject } from "./gameobject.js";
+import { Coin } from "./collectable.js";
 
 
 export class ObjectManager {
@@ -35,14 +36,15 @@ export class ObjectManager {
 
 
     // Spawn an item
-    spawnItem(type, x, y) {
+    spawnItem(type, x, y, speed) {
 
-        const SPEED = -2.0;
+        const DEF_SPEED = -2.0;
 
-        let o = newGameObject(this.items, type);
-        if (o == null) return;
+        if (speed == undefined) speed = DEF_SPEED;
 
-        o.spawn(x, y, SPEED);
+        let o = new type.prototype.constructor(x, y);
+        o.spawn(x, y, speed);
+        
         // Set animation to correspond with the other items
         for (let i of this.items) {
 
@@ -55,6 +57,16 @@ export class ObjectManager {
                 break;
             }
         }
+
+        for (let i = 0; i < this.items.length; ++ i) {
+
+            if (!this.items[i].exist) {
+
+                this.items[i] = o;
+                return;
+            }
+        }
+        this.items.push(o);
     }
 
 
@@ -88,8 +100,19 @@ export class ObjectManager {
 
             if (!o.inCamera) continue;
 
-            this.player.objectCollision(o, true, ev);
-            this.player.boomerang.objectCollision(o, true, ev);
+            if (!o.dying) {
+
+                this.player.objectCollision(o, true, ev);
+                this.player.boomerang.objectCollision(o, true, ev);
+
+                // I don't want to pass object manager
+                // to collision effects, so this works fine enough
+                if (o.dying) {
+
+                    this.spawnItem(Coin, o.pos.x, o.pos.y, 0.0);
+                }
+            }
+
             stage.objectCollision(o, null, ev); 
         }
 

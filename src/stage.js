@@ -6,8 +6,9 @@
  */
 
 import { negMod, clamp } from "./core/util.js";
-import { Coin } from "./collectable.js";
+import { Coin, Heart } from "./collectable.js";
 import { Walker } from "./enemy.js";
+import { Vector2 } from "./core/vector.js";
 
 
 class Layer {
@@ -111,7 +112,9 @@ export class Stage {
                         SPECIAL_1.includes(sindex)) {
 
                         ++ this.base.data[y*this.width+x];
-                        objm.spawnItem(Coin, x*16+8, y*16)
+                        objm.spawnItem(
+                            (this.objects.getValue(x, y, false)-256) == 4 ? Heart : Coin, 
+                            x*16+8, y*16)
                     }
                 }
                 if (WALL_LEFT.includes(sindex)) {
@@ -139,6 +142,12 @@ export class Stage {
             for (let x = 0; x < this.objects.width; ++ x) {
 
                 switch(this.objects.getValue(x, y) - 256) {
+
+                // Player
+                case 1:
+
+                    objm.player.pos = new Vector2(x*16+8, (y+1)*16);
+                    break;
 
                 // Coin 
                 case 2: 
