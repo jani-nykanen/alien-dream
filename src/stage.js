@@ -7,6 +7,7 @@
 
 import { negMod, clamp } from "./core/util.js";
 import { Coin } from "./collectable.js";
+import { Walker } from "./enemy.js";
 
 
 class Layer {
@@ -105,8 +106,8 @@ export class Stage {
                 }
                 if (CEILING.includes(sindex)) {
 
-                    if (objm != null &&
-                        o.ceilingCollision(x*16, y*16+16, 16, ev) &&
+                    if (o.ceilingCollision(x*16, y*16+16, 16, ev) &&
+                        objm != null &&
                         SPECIAL_1.includes(sindex)) {
 
                         ++ this.base.data[y*this.width+x];
@@ -123,6 +124,10 @@ export class Stage {
                 }
             }
         }
+
+        // Border collisions
+        o.wallCollision(0, 0, this.height*16, -1, ev);
+        o.wallCollision(this.width*16, 0, this.height*16, 1, ev);
     }
 
 
@@ -138,6 +143,11 @@ export class Stage {
                 // Coin 
                 case 2: 
                     objm.addItem(Coin, x*16, y*16);
+                    break;
+
+                // Walker
+                case 3:
+                    objm.addEnemy(Walker, x*16, y*16);
                     break;
 
                 default:

@@ -67,7 +67,14 @@ export class GameObject {
             return;
         }
         
-        if (!this.inCamera) return;
+        if (!this.inCamera) {
+
+            if (this.hiddenAnimation != undefined) {
+
+                this.hiddenAnimation(ev);
+            }
+            return;
+        }
 
         if (this.updateLogic != undefined) {
 
@@ -141,8 +148,7 @@ export class GameObject {
             return false;
     
         let bottom = this.pos.y - this.center.y + this.hitbox.y/2;
-
-		// TODO: Hitbox height need to be taken into account!
+        
         if (bottom > y - TOP_MARGIN * ev.step &&
             bottom < y + (BOTTOM_MARGIN + this.speed.y) * ev.step) {
 

@@ -39,7 +39,7 @@ export class Collectable extends GameObject {
         this.speed.y = jumpSpeed;
     }
 
-    
+
     // Animate
     animate(ev) {
         
@@ -47,6 +47,10 @@ export class Collectable extends GameObject {
         
         this.spr.animate(0, 0, 3, ANIM_SPEED, ev.step);;
     }
+
+
+    // Animation when hidden
+    hiddenAnimation = (ev) => this.animate(ev);
     
     
     // Hostile collision
@@ -68,6 +72,12 @@ export class Collectable extends GameObject {
         
         c.drawSprite(this.spr, c.bitmaps.coin,
             Math.round(this.pos.x-8), Math.round(this.pos.y-8));
+    }
+
+
+    floorEvent(ev) {
+
+        this.speed.y = 0;
     }
 }
 

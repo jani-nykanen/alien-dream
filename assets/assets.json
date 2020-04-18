@@ -7,6 +7,7 @@
 
         {"name": "tilesetPresent",  "path": "tileset_present.png"},
         {"name": "coin",  "path": "coin.png"},
+        {"name": "enemies",  "path": "enemies.png"},
         {"name": "boomerang",  "path": "boomerang.png"},
         {"name": "player",  "path": "player.png"}
     ],

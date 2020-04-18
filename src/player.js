@@ -196,6 +196,8 @@ export class Player extends GameObject {
         this.maxHealth = 3;
         this.health = 3;
         this.coins = 0;
+
+        this.isPlayer = true;
     }
 
 
@@ -274,6 +276,10 @@ export class Player extends GameObject {
         if (this.jumpMargin > 0) {
 
             this.jumpMargin -= ev.step;
+        }
+        if (this.stompMargin > 0) {
+
+            this.stompMargin -= ev.step;
         }
         if (this.throwAnimTimer > 0) {
 
