@@ -447,3 +447,50 @@ export class Jumper extends Enemy {
         this.speed.y = JUMP_HEIGHT;
     }
 }
+
+
+export class Bird extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(8, 0);
+
+        this.colbox.y = 16;
+
+        this.speedSet = false;
+    }
+
+
+    checkPlayer(o) {
+
+        const BASE_SPEED = 0.5;
+
+        if (!this.speedSet) {
+
+            this.target.x = (o.pos.x < this.pos.x ? -1 : 1) * BASE_SPEED;
+            this.speed.x = this.target.x;
+            this.speedSet = true;
+        }
+    }
+
+
+    // Logic
+    updateLogic(ev) { }
+
+
+    // Animate
+    animate(ev) {
+
+        this.spr.animate(this.spr.row, 0, 3, 6, ev.step);
+        this.flip = this.target.x < 0 ? Flip.None : Flip.Horizontal;
+    }
+
+
+    wallEvent(ev) {
+
+        this.target.x *= -1;
+        this.speed.x *= -1;
+    }
+}
