@@ -154,8 +154,8 @@ class Boomerang extends GameObject {
         if (!this.exist) return;
         
         c.drawSprite(this.spr, c.bitmaps.boomerang,
-            Math.round(this.pos.x)-8, 
-            Math.round(this.pos.y)-8, 
+            Math.floor(this.pos.x)-8, 
+            Math.floor(this.pos.y)-8, 
             this.flip);
     }
 }
@@ -372,8 +372,8 @@ export class Player extends GameObject {
                 this.spr.frame += 5;
             }
             c.drawSprite(this.spr, c.bitmaps.player,
-                Math.round(this.pos.x)-8, 
-                Math.round(this.pos.y)-24 +1, 
+                Math.floor(this.pos.x)-8, 
+                Math.floor(this.pos.y)-24 +1, 
                 this.flip);
 
             this.spr.frame = frame;
@@ -402,5 +402,6 @@ export class Player extends GameObject {
 
         this.speed.y = 0;
         this.jumpTimer = 0;
+        this.stompMargin = 0;
     }
 }

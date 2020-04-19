@@ -53,8 +53,8 @@ export class Enemy extends GameObject {
         if (!this.exist || !this.inCamera) return;
 
         c.drawSprite(this.spr, c.bitmaps.enemies,
-            Math.round(this.pos.x-8),
-            Math.round(this.pos.y-8)+1, this.flip);
+            Math.floor(this.pos.x-8),
+            Math.floor(this.pos.y-8)+1, this.flip);
     }
 
 
@@ -243,14 +243,14 @@ export class Slime extends Enemy {
 }
 
 
-
+// Dog no more
 export class Dog extends Enemy {
 
     constructor(x, y) {
 
         super(x, y);
 
-        this.spr.setFrame(1, 0);
+        this.spr.setFrame(3, 0);
 
         this.target.y = 2;
         this.center.y = -2;
@@ -269,7 +269,7 @@ export class Dog extends Enemy {
     // Deal with player, mostly to get the position
     checkPlayer(o) {
 
-        const SPEED = 0.75;
+        const SPEED = 0.5;
 
         if (this.canJump) {
 
@@ -283,7 +283,7 @@ export class Dog extends Enemy {
 
         if (this.canJump) {
 
-            this.spr.animate(3, 0, 3, 4, ev.step);
+            this.spr.animate(3, 0, 3, 6, ev.step);
             this.flip = this.target.x < 0 ? Flip.None : Flip.Horizontal;
         }
         else {

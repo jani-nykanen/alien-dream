@@ -90,7 +90,8 @@ export class Collectable extends GameObject {
         if (!this.exist || !this.inCamera) return;
         
         c.drawSprite(this.spr, c.bitmaps.coin,
-            Math.round(this.pos.x-8), Math.round(this.pos.y-8));
+            Math.floor(this.pos.x-8), 
+            Math.floor(this.pos.y-8));
     }
 
 

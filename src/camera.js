@@ -100,8 +100,8 @@ export class Camera {
         if (shiftx == undefined) shiftx = 0;
         if (shifty == undefined) shifty = 0;
 
-        c.moveTo(-Math.round(sx * this.topCorner.x + shiftx), 
-            -Math.round(sy * this.topCorner.y + shifty));
+        c.moveTo(-Math.floor(sx * this.topCorner.x + shiftx), 
+            -Math.floor(sy * this.topCorner.y + shifty));
     }
 
 
