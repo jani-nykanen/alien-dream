@@ -7,7 +7,7 @@
 
 import { negMod, clamp } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
-import { Walker } from "./enemy.js";
+import { Walker, Slime, Dog } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -137,11 +137,13 @@ export class Stage {
     // Parse objects
     parseObjects(objm) {
 
+        let t = 0;
         for (let y = 0; y < this.objects.height; ++ y) {
 
             for (let x = 0; x < this.objects.width; ++ x) {
 
-                switch(this.objects.getValue(x, y) - 256) {
+                t = this.objects.getValue(x, y) - 256;
+                switch(t) {
 
                 // Player
                 case 1:
@@ -155,8 +157,10 @@ export class Stage {
                     break;
 
                 // Walker
-                case 3:
-                    objm.addEnemy(Walker, x*16, y*16);
+                case 17:
+                case 18:
+                case 19:
+                    objm.addEnemy( [Walker, Slime, Dog] [t-17], x*16, y*16);
                     break;
 
                 default:

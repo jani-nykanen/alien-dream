@@ -146,6 +146,10 @@ export class Walker extends Enemy {
     }
 
 
+    // Deal with player, mostly to get the position
+    checkPlayer(o) {}
+
+
     // Animate
     animate(ev) {
 
@@ -160,3 +164,138 @@ export class Walker extends Enemy {
         this.speed.x *= -1;
     }
 }
+
+
+
+const SLIME_JUMP_TIME = 60;
+
+export class Slime extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(2, 0);
+
+        this.friction.y = 0.075;
+
+        this.target.y = 2;
+        this.center.y = -2;
+
+        this.colbox.x = 8;
+
+        this.jumpTimer = SLIME_JUMP_TIME;
+    }
+
+
+    // Logic
+    updateLogic(ev) {
+
+        const JUMP_HEIGHT = -2.25;
+        const HORIZONTAL_SPEED = 0.5;
+
+        if (this.canJump) {
+
+            this.target.x = 0;
+            if ((this.jumpTimer -= ev.step) <= 0) {
+
+                this.jumpTimer += SLIME_JUMP_TIME;
+                this.speed.y = JUMP_HEIGHT;
+
+                this.target.x = (this.flip == Flip.None ? -1 : 1) *
+                    HORIZONTAL_SPEED;
+                this.speed.x = this.target.x;
+            }
+        }
+    }
+
+
+    checkPlayer(o) {
+
+        if (this.canJump) {
+
+            this.flip = o.pos.x < this.pos.x ? Flip.None : Flip.Horizontal;
+        }
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        if (this.canJump) {
+
+            this.spr.setFrame(2, 0);
+        }
+        else {
+
+            this.spr.setFrame(2, this.speed.y < 0 ? 1 : 2);
+        }
+    }
+
+
+    wallEvent(ev) {
+
+        this.target.x *= -1;
+        this.speed.x *= -1;
+    }
+}
+
+
+
+export class Dog extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        
+
+        this.spr.setFrame(1, 0);
+
+        this.target.y = 2;
+        this.center.y = -2;
+
+        this.friction.x = 0.05;
+
+        this.colbox.x = 4;
+
+    }
+
+
+    // Logic
+    updateLogic(ev) { }
+
+
+    // Deal with player, mostly to get the position
+    checkPlayer(o) {
+
+        const SPEED = 1.0;
+
+        if (this.canJump) {
+
+            this.target.x = (o.pos.x < this.pos.x ? -1 : 1) * SPEED;
+        }
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        if (this.canJump) {
+
+            this.spr.animate(3, 0, 3, 4, ev.step);
+            this.flip = this.target.x < 0 ? Flip.None : Flip.Horizontal;
+        }
+        else {
+
+            this.spr.setFrame(3, 4);
+        }
+    }
+
+
+    wallEvent(ev) {
+
+        this.speed.x *= -1;
+    }
+}
+

@@ -95,6 +95,7 @@ export class ObjectManager {
         // Update enemies
         for (let o of this.enemies) {
 
+            o.checkPlayer(this.player);
             o.update(ev);
             o.checkIfInCamera(cam);
 
