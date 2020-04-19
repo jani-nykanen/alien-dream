@@ -6,6 +6,7 @@
 
 import { GameObject } from "./gameobject.js";
 import { Flip } from "./core/canvas.js";
+import { Vector2 } from "./core/vector.js";
 
 
 export class Enemy extends GameObject {
@@ -23,6 +24,8 @@ export class Enemy extends GameObject {
 
         this.canJump = true;
         this.harmful = false;
+        this.immortal = false;
+        this.harmless = false;
 
         this.friction.x = 0.1;
         this.friction.y = 0.1;
@@ -73,14 +76,23 @@ export class Enemy extends GameObject {
         const HURT_MARGIN = 8;
         const JUMP_SPEED_Y = -2.0;
         const JUMP_MARGIN = 16;
+        const SPEED_MARGIN = 0.5;
 
         let py;
+
+        if (this.immortal || this.harmless) {
+
+            if (o.isPlayer && !this.harmless)
+                o.hurt(1, ev);
+
+            return;
+        }
 
         if (o.isPlayer) {
 
             py = this.pos.y + this.center.y - this.hitbox.y / 2;
             if (!this.harmful &&
-                o.speed.y > this.speed.y &&
+                o.speed.y > this.speed.y - SPEED_MARGIN &&
                 o.pos.y >= py &&
                 o.pos.y < py + (HURT_MARGIN + Math.max(0, o.speed.y)) * ev.step) {
     
@@ -493,4 +505,73 @@ export class Bird extends Enemy {
         this.target.x *= -1;
         this.speed.x *= -1;
     }
+}
+
+
+
+export class Ghost extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(9, 0);
+
+        this.colbox.y = 16;
+
+        this.active = false;
+
+        this.friction.x = 0.01;
+        this.friction.y = 0.01;
+
+        this.takeCollision = false;
+        this.immortal = true;
+    }
+
+
+    checkPlayer(o) {
+
+        const BASE_SPEED = 0.5;
+
+        this.flip = o.pos.x < this.pos.x ? Flip.None : Flip.Horizontal;
+
+        let dir = new Vector2();
+        if (this.active = (this.flip != o.flip)) {
+
+            dir.x = o.pos.x - this.pos.x;
+            dir.y = o.pos.y - this.pos.y;
+            dir.normalize();
+
+            this.target.x = dir.x * BASE_SPEED;
+            this.target.y = dir.y * BASE_SPEED;
+        }
+        else {
+
+            this.target.x = 0;
+            this.target.y = 0;
+        }
+    }
+
+
+    // Logic
+    updateLogic(ev) { 
+
+        this.harmless = this.active;
+        this.immortal = !this.harmless;
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        if (this.active) {
+
+            this.spr.animate(this.spr.row, 0, 3, 6, ev.step);
+        }
+        else {
+
+            this.spr.setFrame(this.spr.row, 4);
+        }
+    }
+
 }
