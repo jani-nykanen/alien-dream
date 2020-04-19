@@ -106,6 +106,10 @@ export class Enemy extends GameObject {
     }
 
 
+    // Deal with player, mostly to get the position
+    checkPlayer(o) { }
+
+
     floorEvent(ev) {
 
         this.canJump = true;
@@ -144,10 +148,6 @@ export class Walker extends Enemy {
             this.pos.x += this.speed.x * ev.step;
         }
     }
-
-
-    // Deal with player, mostly to get the position
-    checkPlayer(o) {}
 
 
     // Animate
@@ -248,8 +248,6 @@ export class Dog extends Enemy {
 
         super(x, y);
 
-        
-
         this.spr.setFrame(1, 0);
 
         this.target.y = 2;
@@ -299,3 +297,38 @@ export class Dog extends Enemy {
     }
 }
 
+
+
+export class Imp extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(3, 0);
+
+        this.startY = y;
+
+        this.waveTimer = (((y/16)|0) % 2) * Math.PI;
+    }
+
+
+    // Logic
+    updateLogic(ev) { 
+
+        const AMPLITUDE = 16.0;
+        const WAVE_SPEED = 0.025;
+
+        this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI*2);
+
+        this.pos.y = this.startY + 
+            Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        this.spr.animate(4, 0, 3, 6, ev.step);
+    }
+}

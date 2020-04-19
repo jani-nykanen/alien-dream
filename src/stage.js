@@ -7,7 +7,7 @@
 
 import { negMod, clamp } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
-import { Walker, Slime, Dog } from "./enemy.js";
+import { Walker, Slime, Dog, Imp } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -160,7 +160,8 @@ export class Stage {
                 case 17:
                 case 18:
                 case 19:
-                    objm.addEnemy( [Walker, Slime, Dog] [t-17], x*16, y*16);
+                case 20:
+                    objm.addEnemy( [Walker, Slime, Dog, Imp] [t-17], x*16, y*16);
                     break;
 
                 default:
