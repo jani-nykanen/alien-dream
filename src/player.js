@@ -18,8 +18,8 @@ class Boomerang extends GameObject {
 
         super(16, 16);
 
-        this.hitbox.x = 8;
-        this.hitbox.y = 8;
+        this.hitbox.x = 12;
+        this.hitbox.y = 12;
 
         this.colbox.x = 4;
         this.colbox.y = 4;

@@ -377,3 +377,73 @@ export class SpikeyWalker extends Walker {
         this.spr.row = 6;
     }
 }
+
+
+export class Jumper extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(2, 0);
+
+        this.friction.y = 0.075;
+
+        this.target.x = 0.5;
+        this.target.y = 3;
+        this.center.y = -3;
+
+        this.colbox.x = 8;
+
+        this.speedSet = false;
+    }
+
+
+    // Logic
+    updateLogic(ev) {  }
+
+
+    checkPlayer(o) {
+
+        const BASE_SPEED = 0.5;
+
+        if (!this.speedSet) {
+
+            this.target.x = (o.pos.x < this.pos.x ? -1 : 1) * BASE_SPEED;
+            this.speed.x = this.target.x;
+            this.speedSet = true;
+        }
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        const EPS = 0.33;
+
+        let frame = 1;
+        if (this.speed.y < -EPS)
+            frame = 0;
+        else if (this.speed.y > EPS)
+            frame = 2;
+
+        this.spr.setFrame(7, frame);
+    
+        this.flip = this.target.x < 0 ? Flip.None : Flip.Horizontal;
+    }
+
+
+    wallEvent(ev) {
+
+        this.target.x *= -1;
+        this.speed.x *= -1;
+    }
+
+
+    floorEvent(ev) {
+
+        const JUMP_HEIGHT = -1.75;
+
+        this.speed.y = JUMP_HEIGHT;
+    }
+}
