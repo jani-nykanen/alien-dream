@@ -22,6 +22,7 @@ export class Enemy extends GameObject {
         this.hitbox.y = 12;
 
         this.canJump = true;
+        this.harmful = false;
 
         this.friction.x = 0.1;
         this.friction.y = 0.1;
@@ -78,7 +79,8 @@ export class Enemy extends GameObject {
         if (o.isPlayer) {
 
             py = this.pos.y + this.center.y - this.hitbox.y / 2;
-            if (o.speed.y > this.speed.y &&
+            if (!this.harmful &&
+                o.speed.y > this.speed.y &&
                 o.pos.y >= py &&
                 o.pos.y < py + (HURT_MARGIN + Math.max(0, o.speed.y)) * ev.step) {
     
@@ -153,7 +155,7 @@ export class Walker extends Enemy {
     // Animate
     animate(ev) {
 
-        this.spr.animate(1, 0, 3, 8, ev.step);
+        this.spr.animate(this.spr.row, 0, 3, 8, ev.step);
         this.flip = this.target.x < 0 ? Flip.None : Flip.Horizontal;
     }
 
@@ -253,7 +255,7 @@ export class Dog extends Enemy {
         this.target.y = 2;
         this.center.y = -2;
 
-        this.friction.x = 0.05;
+        this.friction.x = 0.025;
 
         this.colbox.x = 4;
 
@@ -267,7 +269,7 @@ export class Dog extends Enemy {
     // Deal with player, mostly to get the position
     checkPlayer(o) {
 
-        const SPEED = 1.0;
+        const SPEED = 0.75;
 
         if (this.canJump) {
 
@@ -299,17 +301,22 @@ export class Dog extends Enemy {
 
 
 
-export class Imp extends Enemy {
+export class GenericImp extends Enemy {
 
-    constructor(x, y) {
+    constructor(x, y, horizontal, row) {
 
         super(x, y);
 
         this.spr.setFrame(3, 0);
 
-        this.startY = y;
+        this.startPos = this.pos.clone();
+        this.horizontal = horizontal;
 
-        this.waveTimer = (((y/16)|0) % 2) * Math.PI;
+        let compare = horizontal ? x : y;
+
+        this.waveTimer = (((compare/16)|0) % 2) * Math.PI;
+
+        this.spr.row = row;
     }
 
 
@@ -321,14 +328,52 @@ export class Imp extends Enemy {
 
         this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI*2);
 
-        this.pos.y = this.startY + 
-            Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+        if (this.horizontal) {
+
+            this.pos.x = this.startPos.x + 
+                Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+        }
+        else {
+
+            this.pos.y = this.startPos.y + 
+                Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+        }
     }
 
 
     // Animate
     animate(ev) {
 
-        this.spr.animate(4, 0, 3, 6, ev.step);
+        this.spr.animate(this.spr.row, 0, 3, 6, ev.step);
+    }
+}
+
+
+
+export class ImpVertical extends GenericImp {
+
+    constructor(x, y) {
+
+        super(x, y, false, 4);
+    }
+}
+
+
+export class ImpHorizontal extends GenericImp {
+
+    constructor(x, y) {
+
+        super(x, y, true, 5);
+    }
+}
+
+export class SpikeyWalker extends Walker {
+
+    constructor(x, y) {
+
+        super(x, y);
+        this.harmful = true;
+
+        this.spr.row = 6;
     }
 }

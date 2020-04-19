@@ -5,9 +5,9 @@
  * (c) 2020 Jani Nykänen
  */
 
-import { negMod, clamp } from "./core/util.js";
+import { negMod } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
-import { Walker, Slime, Dog, Imp } from "./enemy.js";
+import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -161,7 +161,12 @@ export class Stage {
                 case 18:
                 case 19:
                 case 20:
-                    objm.addEnemy( [Walker, Slime, Dog, Imp] [t-17], x*16, y*16);
+                case 21:
+                case 22:
+                    objm.addEnemy( 
+                        [Walker, Slime, Dog, 
+                        ImpVertical, ImpHorizontal, SpikeyWalker] [t-17], 
+                        x*16, y*16);
                     break;
 
                 default:
