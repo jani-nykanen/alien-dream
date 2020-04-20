@@ -7,7 +7,7 @@
 
 import { negMod } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
-import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame } from "./enemy.js";
+import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -168,10 +168,12 @@ export class Stage {
                 case 24:
                 case 25:
                 case 26:
+                case 27:
                     objm.addEnemy( 
                         [Walker, Slime, Dog, 
                         ImpVertical, ImpHorizontal, SpikeyWalker,
-                        Jumper, Bird, Ghost, Flame] [t-17], 
+                        Jumper, Bird, Ghost, Flame, 
+                        Bullet] [t-17], 
                         x*16, y*16);
                     break;
 

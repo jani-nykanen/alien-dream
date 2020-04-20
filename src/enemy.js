@@ -642,3 +642,65 @@ export class Flame extends Enemy {
         this.kill(ev);
     }
 }
+
+
+export class Bullet extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.spr.setFrame(11, 1);
+
+        this.dirSet = false;
+        this.speedSet = false;
+        this.harmless = true;
+
+        this.dir = 0;
+    }
+
+
+    checkCamera(cam) {
+
+        const SPEED = 1.5;
+
+        if (this.dirSet && !this.speedSet) {
+
+            this.target.x = SPEED * (1 - 2 * this.dir);
+            this.speed.x = this.target.x;
+            this.pos.x = cam.topCorner.x-8 + 172*this.dir;
+
+            this.speedSet = true;
+
+            this.spr.setFrame(11, 0);
+
+            this.harmless = false;
+        }
+    }
+
+
+    checkPlayer(o) {
+
+        if (!this.dirSet) {
+
+            this.dir = o.pos.x > this.pos.x ? 0 : 1;
+            this.dirSet = true;
+
+            this.flip = this.dir == 1 ? Flip.None : Flip.Horizontal;
+        }
+    }
+
+
+    // Logic
+    updateLogic(ev) { }
+
+
+    // Animate
+    animate(ev) {}
+
+
+    wallEvent(ev) {
+
+        this.kill(ev);
+    }
+}
