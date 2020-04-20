@@ -173,7 +173,7 @@ export class Player extends GameObject {
         this.pos.y = y;
         this.oldPos = this.pos.clone();
 
-        this.hitbox.x = 12;
+        this.hitbox.x = 16;
         this.hitbox.y = 20;
 
         this.colbox.x = 8;

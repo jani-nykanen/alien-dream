@@ -114,10 +114,10 @@ export class GameObject {
         let ow = o.colbox.x/2;
         let oh = o.colbox.y/2;
         
-        if (px + pw > ox - ow && 
-            px - pw < ox + ow && 
-            py + ph > oy - oh &&
-            py - ph < oy + oh) {
+        if (px + pw >= ox - ow && 
+            px - pw <= ox + ow && 
+            py + ph >= oy - oh &&
+            py - ph <= oy + oh) {
             
             if (hostile && o.hostileCollision != undefined) {
                 

@@ -27,6 +27,8 @@ export class Enemy extends GameObject {
         this.immortal = false;
         this.harmless = false;
 
+        this.inCamera = false;
+
         this.friction.x = 0.1;
         this.friction.y = 0.1;
 
@@ -122,6 +124,10 @@ export class Enemy extends GameObject {
 
     // Deal with player, mostly to get the position
     checkPlayer(o) { }
+
+
+    // Deal with the camera
+    checkCamera(cam) { }
 
 
     floorEvent(ev) {
@@ -508,7 +514,6 @@ export class Bird extends Enemy {
 }
 
 
-
 export class Ghost extends Enemy {
 
     constructor(x, y) {
@@ -556,8 +561,6 @@ export class Ghost extends Enemy {
     // Logic
     updateLogic(ev) { 
 
-        this.harmless = this.active;
-        this.immortal = !this.harmless;
     }
 
 
@@ -574,4 +577,68 @@ export class Ghost extends Enemy {
         }
     }
 
+}
+
+
+export class Flame extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.startPos = this.pos.clone();
+
+        this.spr.setFrame(10, 0);
+
+        this.colbox.y = 8;
+
+        this.friction.y = 0.05;
+
+        this.speedSet = false;
+        this.immortal = true;
+
+        this.waveTimer = 0;
+    }
+
+
+    checkCamera(cam) {
+
+        const GRAVITY = 0.5;
+
+        if (!this.speedSet) {
+
+            this.target.y = GRAVITY;
+            this.speed.y = 0;
+            this.pos.y = cam.topCorner.y-8;
+
+            this.speedSet = true;
+        }
+    }
+
+
+    // Logic
+    updateLogic(ev) { 
+
+        const WAVE_SPEED = 0.05;
+        const AMPLITUDE = 16;
+
+        this.waveTimer = (this.waveTimer + WAVE_SPEED*ev.step) % (Math.PI*2);
+
+        this.pos.x = this.startPos.x + 
+            Math.round(Math.sin(this.waveTimer) * AMPLITUDE);
+
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        this.spr.animate(this.spr.row, 0, 3, 4, ev.step);
+    }
+
+
+    floorEvent(ev) {
+
+        this.kill(ev);
+    }
 }

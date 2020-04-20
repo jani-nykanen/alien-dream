@@ -7,7 +7,7 @@
 
 import { negMod } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
-import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost } from "./enemy.js";
+import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 
 
@@ -156,6 +156,7 @@ export class Stage {
                     objm.addItem(Coin, x*16, y*16);
                     break;
 
+                // I'm starting to question the meaning of switch...
                 // Walker
                 case 17:
                 case 18:
@@ -166,10 +167,11 @@ export class Stage {
                 case 23:
                 case 24:
                 case 25:
+                case 26:
                     objm.addEnemy( 
                         [Walker, Slime, Dog, 
                         ImpVertical, ImpHorizontal, SpikeyWalker,
-                        Jumper, Bird, Ghost] [t-17], 
+                        Jumper, Bird, Ghost, Flame] [t-17], 
                         x*16, y*16);
                     break;
 
