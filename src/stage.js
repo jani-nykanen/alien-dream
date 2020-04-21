@@ -80,11 +80,12 @@ export class Stage {
 
         const MARGIN = 2;
 
-        const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15];
-        const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15];
-        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15];
-        const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15];
+        const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15, 16];
+        const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15, 16];
+        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15, 16];
+        const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15, 16];
         const SPECIAL_1 = [15];
+        const SPECIAL_2 = [16];
 
         let startx = Math.floor(o.pos.x / 16) - MARGIN;
         let starty = Math.floor(o.pos.y / 16) - MARGIN;
@@ -93,6 +94,7 @@ export class Stage {
         let endy = starty + MARGIN*2;
 
         let sindex = 0;
+        let special = 0;
         for (let y = starty; y < endy; ++ y) {
 
             for (let x = startx; x < endx; ++ x) {
@@ -100,6 +102,12 @@ export class Stage {
                 sindex = this.getSolidIndex(x, y);
                 if (sindex == 0) continue;
                 -- sindex;
+
+                special = 0;
+                if (SPECIAL_1.includes(sindex))
+                    special = 1;
+                else if (SPECIAL_2.includes(sindex))
+                    special = 2;
 
                 if (FLOOR.includes(sindex)) {
 
@@ -109,9 +117,13 @@ export class Stage {
 
                     if (o.ceilingCollision(x*16, y*16+16, 16, ev) &&
                         objm != null &&
-                        SPECIAL_1.includes(sindex)) {
+                        special > 0) {
 
-                        ++ this.base.data[y*this.width+x];
+                        if (special == 1)
+                            ++ this.base.data[y*this.width+x];
+                        else 
+                            this.base.data[y*this.width+x] = 0;
+
                         objm.spawnItem(
                             (this.objects.getValue(x, y, false)-256) == 4 ? Heart : Coin, 
                             x*16+8, y*16)

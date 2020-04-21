@@ -595,7 +595,7 @@ export class Flame extends Enemy {
         this.friction.y = 0.05;
 
         this.speedSet = false;
-        this.immortal = true;
+        this.harmful = true;
 
         this.waveTimer = 0;
     }
