@@ -9,6 +9,8 @@ import { negMod } from "./core/util.js";
 import { Coin, Heart } from "./collectable.js";
 import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
+import { Sprite } from "./core/sprite.js";
+import { newGameObject } from "./gameobject.js";
 
 
 class Layer {
@@ -34,6 +36,55 @@ class Layer {
 
         return this.data[y*this.width+x];
     }
+    
+}
+
+
+
+export class BreakingWall {
+
+    constructor() {
+
+        this.pos = new Vector2();
+        this.exist = false;
+        this.spr = new Sprite(16, 16);
+        this.animSpeed = 0;
+    }
+
+
+    // Spawn
+    spawn(x, y, speed, row) {
+
+        this.pos.x = x;
+        this.pos.y = y;
+        this.animSpeed = speed;
+        this.spr.setFrame(row, 0);
+
+        this.exist = true;
+    }
+
+
+    // Update
+    update(ev) {
+
+        if (!this.exist) return;
+
+        this.spr.animate(this.spr.row, 0, 4, this.animSpeed, ev.step);
+        if (this.spr.frame == 4) {
+
+            this.exist = false;
+        }
+    }
+
+
+    // Draw
+    draw(c) {
+
+        if (!this.exist) return;
+
+        c.drawSprite(this.spr, c.bitmaps.breakingWall,
+            this.pos.x, this.pos.y);
+    }
 }
 
 
@@ -43,12 +94,12 @@ export class Stage {
 
     constructor(assets, index) {
 
-        let baseMap = assets.tilemaps["map" + String(index)];
+        this.baseMap = assets.tilemaps["map" + String(index)];
 
         // Create layers
         this.background = new Layer(assets.tilemaps.background, 0);
-        this.base = new Layer(baseMap, 0);
-        this.objects = new Layer(baseMap, 1);
+        this.base = new Layer(this.baseMap, 0);
+        this.objects = new Layer(this.baseMap, 1);
 
         this.collisionData = assets.tilemaps.collision.cloneLayer(0);
         this.collisionData[-1] = 0;
@@ -56,6 +107,18 @@ export class Stage {
         this.width = this.base.width;
         this.height = this.base.height;
 
+        this.wallPieces = new Array();
+    }
+
+
+    // Reset
+    reset() {
+
+        this.base = new Layer(this.baseMap, 0);
+        for (let w of this.wallPieces) {
+
+            w.exist = false;
+        }
     }
 
 
@@ -70,6 +133,16 @@ export class Stage {
     getSolidIndex(x, y) {
 
         return this.collisionData[this.getTile(this.base, x, y, false)-1];
+    }
+
+
+    // Create a breaking wall
+    createBreakingWall(x, y) {
+
+        (newGameObject(this.wallPieces, BreakingWall)).spawn(
+            x, y, 4, 0
+        );
+
     }
 
 
@@ -121,8 +194,12 @@ export class Stage {
 
                         if (special == 1)
                             ++ this.base.data[y*this.width+x];
-                        else 
+
+                        else {
+
+                            this.createBreakingWall(x*16, y*16);
                             this.base.data[y*this.width+x] = 0;
+                        }
 
                         objm.spawnItem(
                             (this.objects.getValue(x, y, false)-256) == 4 ? Heart : Coin, 
@@ -228,6 +305,16 @@ export class Stage {
     }
 
 
+    // Update (general)
+    update(ev) {
+
+        for (let w of this.wallPieces) {
+
+            w.update(ev);
+        }
+    }
+
+
     // Draw the stage
     draw(c, bmp, cam) {
 
@@ -241,5 +328,11 @@ export class Stage {
         // Draw the base tiles
         cam.use(c);
         this.drawLayer(c, bmp, this.base, cam.topCorner, cam);
+
+        // Draw the breaking tiles
+        for (let w of this.wallPieces) {
+
+            w.draw(c);
+        }
     }
 }

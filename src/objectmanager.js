@@ -5,18 +5,43 @@
  */
 
 import { Player } from "./player.js";
-import { newGameObject } from "./gameobject.js";
 import { Coin } from "./collectable.js";
 
 
 export class ObjectManager {
 
 
-    constructor(stage) {
+    constructor() {
 
-        this.player = new Player(32, stage.height*16-48);
+        this.player = new Player(0, 0);
         this.items = new Array();
         this.enemies = new Array();
+    }
+
+
+    // Reset
+    reset() {
+
+        let lives = this.player.lives;
+        this.player = new Player(0, 0);
+        this.player.lives = lives;
+
+        this.items = new Array();
+        this.enemies = new Array();
+    }
+
+
+    // Do the initial camera check
+    initialCameraCheck(cam) {
+
+        for (let e of this.enemies) {
+
+            e.checkIfInCamera(cam);
+        }
+        for (let i of this.items) {
+
+            i.checkIfInCamera(cam);
+        }
     }
 
 
@@ -75,10 +100,12 @@ export class ObjectManager {
 
         // Update player
         this.player.update(ev);
-        stage.objectCollision(this.player, this, ev);
-        stage.objectCollision(this.player.boomerang, null, ev);
-        cam.followObject(this.player, stage, ev);
-        // this.player.checkIfInCamera(cam);
+        if (!this.player.dying && this.player.exist) {
+
+            stage.objectCollision(this.player, this, ev);
+            stage.objectCollision(this.player.boomerang, null, ev);
+            cam.followObject(this.player, stage, ev);
+        }
 
         // Update collectables
         for (let o of this.items) {
@@ -123,6 +150,10 @@ export class ObjectManager {
 
         hud.updateStats(this.player);
     }
+
+
+    // Is the player dead
+    isPlayerDead = () => !this.player.exist;
 
 
     // Draw

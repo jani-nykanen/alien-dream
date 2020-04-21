@@ -10,15 +10,19 @@ import { updateSpeedAxis } from "./core/util.js";
 
 export class Camera {
 
-    constructor(x, y, w, h) {
+    constructor(o, w, h, stage) {
 
-        this.pos = new Vector2(x, y);
+        this.pos = new Vector2(
+            Math.floor(o.pos.x/w)*w + w/2, 
+            Math.floor(o.pos.y/h)*h + h/2
+        );
         this.width = w;
         this.height = h;
 
         this.look = new Vector2();
         this.lookTarget = new Vector2();
 
+        this.restrict(stage);
         this.topCorner = this.getTopCorner();
     }
 
@@ -33,6 +37,8 @@ export class Camera {
 
         this.pos.x = o.pos.x;
         this.pos.x -= o.center.x;
+
+        if (o.dying || !o.exist) return;
 
         // Vertical
         let y = o.pos.y - o.center.y;

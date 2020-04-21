@@ -7,6 +7,9 @@
 import { createScoreString } from "./core/util.js";
 
 
+const INITIAL_TIME = 300;
+
+
 export class HUD {
 
     constructor() {
@@ -16,7 +19,15 @@ export class HUD {
         this.maxHealth = 3;
         this.health = this.maxHealth;
 
-        this.time = 300;
+        this.time = INITIAL_TIME;
+    }
+
+
+    // Reset
+    reset() {
+
+        this.health = this.maxHealth;
+        this.time = INITIAL_TIME;
     }
 
 

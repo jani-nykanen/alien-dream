@@ -82,10 +82,12 @@ export class Enemy extends GameObject {
 
         let py;
 
+        let dir = o.pos.x < this.pos.x ? -1 : 1;
+
         if (this.immortal || this.harmless) {
 
             if (o.isPlayer && !this.harmless)
-                o.hurt(1, ev);
+                o.hurt(1, dir, ev);
 
             return;
         }
@@ -105,7 +107,7 @@ export class Enemy extends GameObject {
             }
             else {
 
-                o.hurt(1, ev);
+                o.hurt(1, dir, ev);
             }
         }
         else {

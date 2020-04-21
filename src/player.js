@@ -11,6 +11,10 @@ import { clamp } from "./core/util.js";
 import { Vector2 } from "./core/vector.js";
 
 
+const HURT_TIME = 90;
+const KNOCKBACK_TIME = 30;
+
+
 class Boomerang extends GameObject {
 
 
@@ -203,6 +207,8 @@ export class Player extends GameObject {
         this.coins = 0;
 
         this.isPlayer = true;
+
+        this.deathPos = new Vector2();
     }
 
 
@@ -227,6 +233,19 @@ export class Player extends GameObject {
     }
 
 
+    // Time to die!
+    die(ev) {
+
+        const DEATH_RANGE = 144;
+
+        this.baseMovement(ev);
+
+        this.spr.setFrame(2, this.speed.y < 0 ? 0 : 1);
+
+        return (this.pos.y-this.spr.height - this.deathPos.y) > DEATH_RANGE;
+    }
+
+
     // Update player logic
     updateLogic(ev) {
 
@@ -236,40 +255,48 @@ export class Player extends GameObject {
         const JUMP_TIME = 16;
 
         // Determine target speed
-        this.target.x = ev.input.stick.x * HORIZONTAL_TARGET;
+        this.target.x = 0.0;
         this.target.y = GRAVITY;
 
-        // Check jumping
-        let s = ev.input.actions.fire1.state;
-        if (this.stompMargin > 0 && 
-            (s & State.DownOrPressed) == 1) {
+         // Update boomerang
+         this.boomerang.update(ev);
+         this.boomerang.updateReturnPoint(
+             this.pos.x, this.pos.y-8
+         );
 
-            this.jumpTimer = this.stompMargin;
-        }
-        else if ((this.canJump || this.jumpMargin > 0) && 
-            s == State.Pressed) {
+        
+        let s;
+        if (this.hurtTimer <= HURT_TIME) {
 
-            this.jumpTimer = JUMP_TIME;
+            // Horizontal movement
+            this.target.x = ev.input.stick.x * HORIZONTAL_TARGET;
 
-            // ev.audio.playSample(ev.audio.samples.jump, 0.50);
-            this.jumpMargin = 0.0;
-        }
-        else if ( (s & State.DownOrPressed) == 0) {
+            // Check jumping
+            s = ev.input.actions.fire1.state;
+            if (this.stompMargin > 0 && 
+                (s & State.DownOrPressed) == 1) {
 
-            this.jumpTimer = 0;
-        }
+                this.jumpTimer = this.stompMargin;
+            }
+            else if ((this.canJump || this.jumpMargin > 0) && 
+                s == State.Pressed) {
 
-        // Update boomerang
-        this.boomerang.update(ev);
-        this.boomerang.updateReturnPoint(
-            this.pos.x, this.pos.y-8
-        );
+                this.jumpTimer = JUMP_TIME;
 
-        // Create a boomerang
-        if (!this.boomerang.exist &&
-            ev.input.actions.fire2.state == State.Pressed) {
+                // ev.audio.playSample(ev.audio.samples.jump, 0.50);
+                this.jumpMargin = 0.0;
+            }
+            else if ( (s & State.DownOrPressed) == 0) {
 
-            this.spawnBoomerang();
+                this.jumpTimer = 0;
+            }
+
+            // Create a boomerang
+            if (!this.boomerang.exist &&
+                ev.input.actions.fire2.state == State.Pressed) {
+
+                this.spawnBoomerang();
+            }
         }
 
         // Update timers
@@ -312,14 +339,29 @@ export class Player extends GameObject {
 
 
     // Hurt
-    hurt(amount, ev) {
+    hurt(amount, dir, ev) {
 
-        const HURT_TIME = 60;
+        const HURT_TIME = 120;
+        const KNOCKBACK_SPEED = 2.0;
 
-        if (this.hurtTimer > 0) return;
+        if (this.dying || !this.exist ||
+            this.hurtTimer > 0) return;
 
-        this.hurtTimer = HURT_TIME;
+        this.hurtTimer = HURT_TIME + KNOCKBACK_TIME;
         this.health = Math.max(0, this.health-amount);
+
+        if (this.health <= 0) {
+
+            this.kill(ev);
+        }
+        else {
+            
+            this.speed.x = KNOCKBACK_SPEED * dir;
+        }
+
+        this.throwAnimTimer = 0.0;
+        this.jumpMargin = 0;
+        this.jumpTimer = 0;
     }
 
 
@@ -328,6 +370,12 @@ export class Player extends GameObject {
 
         const EPS = 0.01;
         const AIR_DELTA = 0.5;
+
+        if (this.hurtTimer > HURT_TIME) {
+
+            this.spr.setFrame(1, 3);
+            return;
+        }
 
         if (Math.abs(this.target.x) > EPS) 
             this.flip = this.target.x < 0;
@@ -357,6 +405,25 @@ export class Player extends GameObject {
     }
 
 
+    // Kill
+    kill(ev) {
+
+        const DEATH_JUMP = -2.5;
+
+        this.throwAnimTimer = 0;
+        this.hurtTimer = 0;
+
+        this.deathPos = this.pos.clone();
+
+        this.speed.x = 0;
+        this.target.x = 0;
+        this.speed.y = DEATH_JUMP;
+
+        this.dying = true;
+        -- this.lives;
+    }
+
+
     // Draw 
     draw(c) {
 
@@ -365,6 +432,7 @@ export class Player extends GameObject {
         // Draw the base sprite
         let frame = this.spr.frame;
         if (this.hurtTimer <= 0 || 
+            this.hurtTimer > HURT_TIME ||
             Math.floor(this.hurtTimer/4) % 2 == 1) {
 
             if (this.throwAnimTimer > 0) {
