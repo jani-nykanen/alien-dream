@@ -5,8 +5,8 @@
  * (c) 2020 Jani Nykänen
  */
 
-import { negMod } from "./core/util.js";
-import { Coin, Heart } from "./collectable.js";
+import { negMod, clamp } from "./core/util.js";
+import { Coin, Heart, LifeUp } from "./collectable.js";
 import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 import { Sprite } from "./core/sprite.js";
@@ -204,7 +204,7 @@ export class Stage {
                         ev.audio.playSample(ev.audio.samples.breakWall, 0.45);
 
                         objm.spawnItem(
-                            (this.objects.getValue(x, y, false)-256) == 4 ? Heart : Coin, 
+                            [Coin, LifeUp, Heart] [clamp(this.objects.getValue(x, y, false)-258, 0, 2)],
                             x*16+8, y*16)
                     }
                 }

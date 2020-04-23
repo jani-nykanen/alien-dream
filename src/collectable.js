@@ -82,7 +82,9 @@ export class Collectable extends GameObject {
         }
 
         ev.audio.playSample(
-            [ev.audio.samples.coin, ev.audio.samples.heart] [this.spr.row], 
+            [ev.audio.samples.coin, 
+            ev.audio.samples.heart, 
+            ev.audio.samples.life] [this.spr.row], 
             0.40);
     
     }
@@ -136,3 +138,34 @@ export class Heart extends Collectable {
         o.health = Math.min(o.maxHealth, o.health+1);
     }
 }
+
+
+
+export class LifeUp extends Collectable {
+
+
+    constructor(x, y) {
+
+        super(x, y, 2);
+    }
+
+
+    // Animate
+    animate(ev) {
+        
+        const ANIM_SPEED = 6;
+        const INITIAL_FRAME_SPEED = 60;
+        
+        this.spr.animate(this.spr.row, 
+            0, 3,
+            this.spr.frame == 0 ? INITIAL_FRAME_SPEED : ANIM_SPEED, 
+            ev.step);;
+    }
+
+
+    deathEvent(o, ev) {
+
+        o.lives = Math.min(99, o.lives+1);
+    }
+}
+
