@@ -4,6 +4,8 @@
  * (c) 2020 Jani Nykänen
  */
 
+import { RGB } from "./vector.js";
+
 
 
 const TRANSITION_TIME = 60;
@@ -23,29 +25,33 @@ export class Transition {
 
         this.timer = 0;
         this.cb = null;
-        this.color = {r: 0, g: 0, b: 0};
+        this.color = new RGB();
         this.active = false;
         this.speed = 1;
         this.fadeIn = false;
         this.mode = TransitionType.Fade;
+        this.param = 0;
 
         this.center = null;
     }
 
 
     // Make the transition active
-    activate(fadeIn, mode, speed, cb, r, g, b) {
+    activate(fadeIn, mode, speed, cb, param, color) {
 
-        if (r == null) {
+        if (color == null) {
 
-            r = 0; g = 0; b = 0;
+            this.color = new RGB();
         }
+        else {
+
+            this.color = color.clone();
+        }
+
+        this.param = param;
 
         this.fadeIn = fadeIn;
         this.speed = speed;
-        this.color.r = r;
-        this.color.g = g;
-        this.color.b = b;
         this.timer = TRANSITION_TIME;
         this.cb = cb;
         this.mode = mode;
@@ -101,6 +107,11 @@ export class Transition {
         switch(this.mode) {
 
         case TransitionType.Fade:
+
+            if (this.param != null) {
+
+                t = Math.round(t * this.param) / this.param;
+            }
 
             c.setColor(this.color.r, this.color.g, this.color.b, t);
             c.fillRect(0, 0, c.width, c.height);

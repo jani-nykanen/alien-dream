@@ -283,7 +283,7 @@ export class Player extends GameObject {
 
                 this.jumpTimer = JUMP_TIME;
 
-                // ev.audio.playSample(ev.audio.samples.jump, 0.50);
+                ev.audio.playSample(ev.audio.samples.jump, 0.50);
                 this.jumpMargin = 0.0;
             }
             else if ( (s & State.DownOrPressed) == 0) {
@@ -296,6 +296,8 @@ export class Player extends GameObject {
                 ev.input.actions.fire2.state == State.Pressed) {
 
                 this.spawnBoomerang();
+
+                ev.audio.playSample(ev.audio.samples.boomerang, 0.60);
             }
         }
 
@@ -346,6 +348,8 @@ export class Player extends GameObject {
 
         if (this.dying || !this.exist ||
             this.hurtTimer > 0) return;
+
+        ev.audio.playSample(ev.audio.samples.hurt, 0.40);
 
         this.hurtTimer = HURT_TIME + KNOCKBACK_TIME;
         this.health = Math.max(0, this.health-amount);

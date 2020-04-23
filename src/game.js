@@ -11,6 +11,7 @@ import { Stage } from "./stage.js";
 import { HUD } from "./hud.js";
 import { ObjectManager } from "./objectmanager.js";
 import { TransitionType } from "./core/transition.js";
+import { State } from "./core/input.js";
 
 
 export class Game {
@@ -24,6 +25,8 @@ export class Game {
         this.stage = null;
         this.hud = null;
         this.objm = null;
+
+        this.paused = false;
     }
 
 
@@ -65,6 +68,14 @@ export class Game {
 
         if (ev.tr.active) return;
 
+        let s = ev.input.actions.start.state;
+        if (s == State.Pressed) {
+
+            this.paused = !this.paused;
+            ev.audio.playSample(ev.audio.samples.pause, 0.40);
+        }
+        if (this.paused) return;
+
         this.objm.update(this.stage, this.cam, this.hud, ev);
         this.hud.update(ev);
         this.stage.update(ev);
@@ -72,8 +83,19 @@ export class Game {
         if (this.objm.isPlayerDead()) {
 
             ev.tr.activate(true, TransitionType.Fade,
-                2.0, (ev) => this.reset());
+                2.0, (ev) => this.reset(), 3);
         }
+    }
+
+
+    // Draw pause screen
+    drawPauseScreen(c) {
+
+        c.setColor(0, 0, 0, 123.0/255.0);
+        c.fillRect(0, 0, c.width, c.height);
+
+        c.drawText(c.bitmaps.font, "PAUSED", 
+            c.width/2, c.height/2-4, 0, 0, true);
     }
 
 
@@ -92,6 +114,12 @@ export class Game {
         // Draw HUD
         c.moveTo();
         this.hud.draw(c);
+
+        // Draw pause screen
+        if (this.paused) {
+
+            this.drawPauseScreen(c);
+        }
     }
 
 

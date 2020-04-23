@@ -69,6 +69,8 @@ export class Enemy extends GameObject {
         this.dying = true;
         this.spr.setFrame(0, 0);
         this.flip = Flip.None;
+
+        ev.audio.playSample(ev.audio.samples.hit, 0.70);
     }
 
 
@@ -180,7 +182,7 @@ export class Walker extends Enemy {
     }
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
         this.target.x *= -1;
         this.speed.x *= -1;
@@ -227,6 +229,8 @@ export class Slime extends Enemy {
                 this.target.x = (this.flip == Flip.None ? -1 : 1) *
                     HORIZONTAL_SPEED;
                 this.speed.x = this.target.x;
+
+                ev.audio.playSample(ev.audio.samples.jump, 0.40);
             }
         }
     }
@@ -255,10 +259,16 @@ export class Slime extends Enemy {
     }
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
         this.target.x *= -1;
         this.speed.x *= -1;
+    }
+
+
+    ceilingEvent(ev) {
+
+        this.speed.y = 0;
     }
 }
 
@@ -313,9 +323,9 @@ export class Dog extends Enemy {
     }
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
-        this.speed.x *= -1;
+        this.speed.x = 0;
     }
 }
 
@@ -453,7 +463,7 @@ export class Jumper extends Enemy {
     }
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
         this.target.x *= -1;
         this.speed.x *= -1;
@@ -508,7 +518,7 @@ export class Bird extends Enemy {
     }
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
         this.target.x *= -1;
         this.speed.x *= -1;
@@ -701,7 +711,7 @@ export class Bullet extends Enemy {
     animate(ev) {}
 
 
-    wallEvent(ev) {
+    wallEvent(dir, ev) {
 
         this.kill(ev);
     }

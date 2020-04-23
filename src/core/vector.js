@@ -72,3 +72,20 @@ export class Vector2 {
 
 }
 
+
+export class RGB {
+
+
+    constructor(r, g, b) {
+
+        this.r = r == null ? 0 : r; 
+        this.g = g == null ? 0 : g;
+        this.b = b == null ? 0 : b;
+    }
+
+
+    // Return a (deep?) copy of the vector
+    clone() { return new RGB(this.r, this.g, this.b) }
+    
+
+}

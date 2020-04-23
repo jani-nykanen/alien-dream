@@ -80,6 +80,10 @@ export class Collectable extends GameObject {
 
             this.deathEvent(o, ev);
         }
+
+        ev.audio.playSample(
+            [ev.audio.samples.coin, ev.audio.samples.heart] [this.spr.row], 
+            0.40);
     
     }
 

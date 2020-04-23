@@ -200,6 +200,8 @@ export class Stage {
                             this.createBreakingWall(x*16, y*16);
                             this.base.data[y*this.width+x] = 0;
                         }
+                        
+                        ev.audio.playSample(ev.audio.samples.breakWall, 0.45);
 
                         objm.spawnItem(
                             (this.objects.getValue(x, y, false)-256) == 4 ? Heart : Coin, 

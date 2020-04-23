@@ -78,7 +78,7 @@ export class Menu {
 
         if (this.cpos != opos) {
 
-            ev.audio.playSample(ev.audio.samples.next, 0.60);
+            ev.audio.playSample(ev.audio.samples.next, 0.50);
         }
 
         let b = this.buttons[this.cpos];
@@ -89,7 +89,7 @@ export class Menu {
 
                 b.cb(ev);
             }
-            ev.audio.playSample(ev.audio.samples.accept, 0.60);
+            ev.audio.playSample(ev.audio.samples.accept, 0.50);
         }
     }
 

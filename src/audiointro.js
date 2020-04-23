@@ -43,13 +43,13 @@ export class AudioIntro {
     // Draw
     draw(c) {
 
-        c.clear(0);
+        c.clear(0, 132, 173);
 
         c.drawText(c.bitmaps.font,
             "ENABLE AUDIO?\nPRESS ENTER\nTO CONFIRM.",
-            16, 32, 0, 2, false);
+            32, c.height/2 - 32, 0, 2, false);
 
-        this.menu.draw(c, c.width/2, c.height/2);
+        this.menu.draw(c, c.width/2, c.height/2+16);
     }
 
 }

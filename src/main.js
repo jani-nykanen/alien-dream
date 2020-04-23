@@ -23,6 +23,6 @@ window.onload = () => {
             {name : "fire2", key : "KeyX", button1 : 1, button2: 2},
             {name : "start", key : "Enter", button1 : 9, button2 : 7},
         )
-        .run(Game);
+        .run(AudioIntro);
 }
 

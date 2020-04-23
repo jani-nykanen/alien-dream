@@ -22,5 +22,16 @@
     ],
 
     "audioPath" : "assets/audio/",
-    "audio" : []
+    "audio" : [
+        {"name": "hit",  "path": "hit.wav"},
+        {"name": "hurt",  "path": "hurt.wav"},
+        {"name": "pause",  "path": "pause.wav"},
+        {"name": "accept",  "path": "accept.wav"},
+        {"name": "next",  "path": "next.wav"},
+        {"name": "jump",  "path": "jump.wav"},
+        {"name": "coin",  "path": "coin.wav"},
+        {"name": "breakWall",  "path": "break.wav"},
+        {"name": "boomerang",  "path": "throw.wav"},
+        {"name": "heart",  "path": "heart.wav"}
+    ]
 }
