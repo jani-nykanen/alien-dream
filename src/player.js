@@ -252,7 +252,7 @@ export class Player extends GameObject {
         const JUMP_SPEED = -1.75;
         const HORIZONTAL_TARGET = 1.0;
         const GRAVITY = 2.5;
-        const JUMP_TIME = 16;
+        const JUMP_TIME = 22;
 
         // Determine target speed
         this.target.x = 0.0;
