@@ -71,6 +71,8 @@ export class Camera {
     // Restrict camera to the stage dimensions
     restrict(stage) {
 
+        const BOTTOM_OFFSET = 8;
+
         if (this.pos.x < this.width/2) {
 
             this.look.x -= (this.pos.x - this.width/2);
@@ -85,8 +87,8 @@ export class Camera {
         if (this.pos.y < this.height/2) 
             this.pos.y = this.height/2;
         
-        if (this.pos.y + this.height/2 > stage.height*16)
-            this.pos.y = stage.height*16 - this.height/2;   
+        if (this.pos.y + this.height/2 > stage.height*16 + BOTTOM_OFFSET)
+            this.pos.y = stage.height*16 + BOTTOM_OFFSET - this.height/2;   
  
     }
 

@@ -19,6 +19,7 @@ export class AudioIntro {
                     "YES", (ev) => {
 
                         ev.audio.toggle(true);
+                        ev.audio.setGlobalSampleVolume(0.70);
                         ev.changeScene(Game);
                     }
                 ),
