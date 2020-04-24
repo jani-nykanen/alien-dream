@@ -108,6 +108,8 @@ export class Stage {
         this.height = this.base.height;
 
         this.wallPieces = new Array();
+
+        this.lavaSprite = new Sprite(16, 16);
     }
 
 
@@ -299,6 +301,12 @@ export class Stage {
                 sx = tid % 16;
                 sy = (tid / 16) | 0;
 
+                // If animated
+                if (this.getSolidIndex(x, y) == 18) {
+
+                    sx += this.lavaSprite.frame;
+                }
+
                 c.drawBitmapRegion(bmp, 
                     sx*16, sy*16, 16, 16,
                     x*16, y*16);
@@ -309,6 +317,10 @@ export class Stage {
 
     // Update (general)
     update(ev) {
+
+        const LAVA_ANIM_SPEED = 10;
+
+        this.lavaSprite.animate(0, 0, 2, LAVA_ANIM_SPEED, ev.step);
 
         for (let w of this.wallPieces) {
 
