@@ -343,6 +343,7 @@ export class Player extends GameObject {
     // Hurt
     hurt(amount, dir, ev) {
 
+        const KNOCKBACK_JUMP = -3.0;
         const HURT_TIME = 120;
         const KNOCKBACK_SPEED = 2.0;
 
@@ -360,13 +361,39 @@ export class Player extends GameObject {
         }
         else {
             
-            this.speed.x = KNOCKBACK_SPEED * dir;
+            if (dir != null)
+                this.speed.x = KNOCKBACK_SPEED * dir;
+            else 
+                this.speed.y = KNOCKBACK_JUMP;
         }
 
         this.throwAnimTimer = 0.0;
         this.jumpMargin = 0;
         this.jumpTimer = 0;
     }
+
+
+     // Hurt collision
+     hurtCollision(x, y, w, h, ev) {
+
+        if (this.dying || !this.exist || this.hurtTimer > 0) 
+            return false;
+
+        let px = this.pos.x - this.center.x - this.colbox.x/2;
+        let py = this.pos.y - this.center.y - this.colbox.y/2;
+        let pw = this.colbox.x;
+        let ph = this.colbox.y;
+
+        if (px+pw > x && py+ph > y && px < x+w && py < y+h) {
+
+            this.hurt(1, null, ev);
+
+            return true;
+        }
+
+        return false;
+    }
+
 
 
     // Animate

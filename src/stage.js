@@ -154,6 +154,7 @@ export class Stage {
         if (!o.exist || o.dying) return;
 
         const MARGIN = 2;
+        const LAVA_MARGIN = 6;
 
         const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15, 16];
         const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15, 16];
@@ -161,6 +162,7 @@ export class Stage {
         const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15, 16];
         const SPECIAL_1 = [15];
         const SPECIAL_2 = [16];
+        const HURT = [17];
 
         let startx = Math.floor(o.pos.x / 16) - MARGIN;
         let starty = Math.floor(o.pos.y / 16) - MARGIN;
@@ -217,6 +219,12 @@ export class Stage {
                 if (WALL_RIGHT.includes(sindex)) {
 
                     o.wallCollision(x*16+16, y*16, 16, -1, ev);
+                }
+
+                if (HURT.includes(sindex) && o.hurtCollision != undefined) {
+
+                    o.hurtCollision(x*16, y*16+LAVA_MARGIN, 
+                        16, 16-LAVA_MARGIN, ev);
                 }
             }
         }
