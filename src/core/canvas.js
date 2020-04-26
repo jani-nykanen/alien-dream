@@ -60,7 +60,7 @@ export class Canvas  {
 
         let cdiv = document.createElement("div");
         cdiv.setAttribute("style", 
-            "position: absolute; top: 0; left: 0; z-index: -1");
+            "position: absolute; top: 0; left: 0; z-index: -1;");
 
         this.canvas = document.createElement("canvas");
         this.canvas.width = w;
