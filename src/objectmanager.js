@@ -6,6 +6,7 @@
 
 import { Player } from "./player.js";
 import { Coin } from "./collectable.js";
+import { Flag } from "./flag.js";
 
 
 export class ObjectManager {
@@ -16,18 +17,24 @@ export class ObjectManager {
         this.player = new Player(0, 0);
         this.items = new Array();
         this.enemies = new Array();
+        this.flags = new Array();
     }
 
 
     // Reset
-    reset() {
+    reset(soft) {
 
-        let lives = this.player.lives;
-        this.player = new Player(0, 0);
-        this.player.lives = lives;
+        let lives;
+        if (!soft) {
+
+            lives = this.player.lives;
+            this.player = new Player(0, 0);
+            this.player.lives = lives;
+        }
 
         this.items = new Array();
         this.enemies = new Array();
+        this.flags = new Array();
     }
 
 
@@ -41,6 +48,10 @@ export class ObjectManager {
         for (let i of this.items) {
 
             i.checkIfInCamera(cam);
+        }
+        for (let f of this.flags) {
+
+            f.checkIfInCamera(cam);
         }
     }
 
@@ -57,6 +68,13 @@ export class ObjectManager {
     addEnemy(type, x, y) {
 
         this.enemies.push(new type.prototype.constructor(x+8, y+8));
+    }
+
+
+    // Add an flag
+    addFlag(x, y, active) {
+
+        this.flags.push(new Flag(x+8, y-16, active));
     }
 
 
@@ -96,7 +114,7 @@ export class ObjectManager {
 
 
     // Update
-    update(stage, cam, hud, ev) {
+    update(stage, cam, hud, nextCB, ev) {
 
         // Update player
         this.player.update(ev);
@@ -117,6 +135,15 @@ export class ObjectManager {
 
             this.player.objectCollision(o, true, ev);
             stage.objectCollision(o, null, ev); 
+        }
+
+        // Update flags
+        for (let f of this.flags) {
+
+            f.checkIfInCamera(cam);
+            f.update(ev);
+            f.playerCollision(this.player,
+                nextCB, ev);
         }
 
         // Update enemies
@@ -158,6 +185,12 @@ export class ObjectManager {
 
     // Draw
     draw(c) {
+
+        // Draw flags
+        for (let f of this.flags) {
+
+            f.draw(c);
+        }
 
         // Draw collectables
         for (let o of this.items) {

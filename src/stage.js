@@ -94,10 +94,38 @@ export class Stage {
 
     constructor(assets, index) {
 
+        // To make sure Closure won't go nuts
+        this.baseMap = null;
+        this.background = null;
+        this.bgmode = null
+        this.base = null;
+        this.objects = null;
+        this.collisionData = null;
+
+        this.createLayers(assets, index);
+
+        this.width = this.base.width;
+        this.height = this.base.height;
+
+        this.wallPieces = new Array();
+
+        this.lavaSprite = new Sprite(16, 16);
+
+        this.index = index;
+
+        this.resetPlayer = true;
+    }
+
+
+    // Create layers
+    createLayers(assets, index) {
+
         this.baseMap = assets.tilemaps["map" + String(index)];
 
-        // Create layers
-        this.background = new Layer(assets.tilemaps.background, 0);
+        this.background = new Layer(
+            assets.tilemaps[this.baseMap.properties.background], 
+            0);
+        this.bgmode = Number(this.baseMap.properties.bgmode);
         this.base = new Layer(this.baseMap, 0);
         this.objects = new Layer(this.baseMap, 1);
 
@@ -106,10 +134,6 @@ export class Stage {
 
         this.width = this.base.width;
         this.height = this.base.height;
-
-        this.wallPieces = new Array();
-
-        this.lavaSprite = new Sprite(16, 16);
     }
 
 
@@ -121,6 +145,17 @@ export class Stage {
 
             w.exist = false;
         }
+        this.resetPlayer = true;
+    }
+
+
+    // Switch to next
+    switchNext(assets) {
+        
+        this.resetPlayer = false;
+
+        ++ this.index;
+        this.createLayers(assets, this.index);
     }
 
 
@@ -249,7 +284,15 @@ export class Stage {
                 // Player
                 case 1:
 
-                    objm.player.pos = new Vector2(x*16+8, (y+1)*16);
+                    objm.addFlag(x*16, y*16, true);
+
+                    if (this.resetPlayer)
+                        objm.player.pos = new Vector2(x*16+8, (y+1)*16);
+                    else {
+
+                        objm.player.pos.x = x*16 + 8;
+                    }
+
                     break;
 
                 // Coin 
@@ -257,8 +300,12 @@ export class Stage {
                     objm.addItem(Coin, x*16, y*16);
                     break;
 
+                // Flag
+                case 5:
+                    objm.addFlag(x*16, y*16, false);
+                    break;
+
                 // I'm starting to question the meaning of switch...
-                // Walker
                 case 17:
                 case 18:
                 case 19:
@@ -342,10 +389,12 @@ export class Stage {
 
         const SCALE = 0.5;
 
+        let bgScale = this.bgmode == 0 ? SCALE : 1.0;
+
         // Draw the background
-        cam.use(c, SCALE);
+        cam.use(c, bgScale);
         this.drawLayer(c, bmp, this.background, 
-            cam.topCorner.scale(SCALE), cam);
+            cam.topCorner.scale(bgScale), cam);
 
         // Draw the base tiles
         cam.use(c);

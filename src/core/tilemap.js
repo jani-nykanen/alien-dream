@@ -7,6 +7,16 @@ import { negMod } from "./util.js";
  */
 
 
+export class TilemapProperty {
+
+    constructor(key, value) {
+
+        this.key = key;
+        this.value = value;
+    }
+}
+
+
 export class Tilemap {
 
 
@@ -18,12 +28,26 @@ export class Tilemap {
         let root = doc.getElementsByTagName("map")[0];
         this.width = String(root.getAttribute("width"));
         this.height = String(root.getAttribute("height"));
-        
+
         // Get layers
         let data = root.getElementsByTagName("layer");
         this.layers = new Array();
+
+        // Find the minimal id
+        let min = 9999;
+        for (let d of data) {
+
+            if (d.id < min) {
+
+                min = d.id;
+            }
+        }
+
         let str, content;
+        let id;
         for (let i = 0; i < data.length; ++ i) {
+
+            id = data[i].id-min;
 
             // Get layer data & remove newlines
             str = data[i].getElementsByTagName("data")[0].
@@ -34,12 +58,28 @@ export class Tilemap {
             content = str.split(",");
 
             // Create a new layer
-            this.layers.push(new Array());
+            this.layers[id] = new Array();
             for (let j = 0; j < content.length; ++ j) {
 
-                this.layers[i][j] = parseInt(content[j]);
+                this.layers[id][j] = parseInt(content[j]);
             }
         }
+
+        // Get properties
+        this.properties = new Array();
+        let prop = root.getElementsByTagName("properties")[0];
+
+        if (prop != undefined) {
+
+            for (let p of prop.getElementsByTagName("property")) {
+
+                if ( p.getAttribute("name") != undefined) {
+
+                    this.properties[ p.getAttribute("name")] = p.getAttribute("value");
+                }
+            }
+        }
+        
     }
 
 
@@ -74,3 +114,4 @@ export class Tilemap {
         return arr;
     }
 }
+

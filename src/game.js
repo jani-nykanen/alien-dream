@@ -51,6 +51,22 @@ export class Game {
     }
 
 
+    // Stage swap
+    nextStage(ev) {
+
+        let oldX = this.objm.player.pos.x;
+
+        this.stage.switchNext(ev.assets);
+        this.objm.reset(true);
+        this.stage.parseObjects(this.objm);
+
+        this.cam.pos.x -= oldX - this.objm.player.pos.x;
+        this.cam.getTopCorner();
+        this.cam.restrict(this.stage);
+        this.objm.initialCameraCheck(this.cam);
+    }
+
+
     // Activate the scene
     activate(param, ev) {
 
@@ -76,7 +92,9 @@ export class Game {
         }
         if (this.paused) return;
 
-        this.objm.update(this.stage, this.cam, this.hud, ev);
+        this.objm.update(this.stage, this.cam, this.hud, 
+            (ev) => this.nextStage(ev),
+            ev);
         this.hud.update(ev);
         this.stage.update(ev);
 
