@@ -672,6 +672,15 @@ export class Bullet extends Enemy {
     }
 
 
+    hiddenAnimation(ev) {
+
+        if (this.speedSet) {
+
+            this.exist = false;
+        }
+    }
+
+
     checkCamera(cam) {
 
         const SPEED = 1.5;
@@ -691,7 +700,7 @@ export class Bullet extends Enemy {
     }
 
 
-    checkPlayer(o) {
+    checkPlayer(o, ev) {
 
         if (!this.dirSet) {
 
@@ -699,6 +708,8 @@ export class Bullet extends Enemy {
             this.dirSet = true;
 
             this.flip = this.dir == 1 ? Flip.None : Flip.Horizontal;
+
+            ev.audio.playSample(ev.audio.samples.bullet, 0.50);
         }
     }
 

@@ -44,9 +44,7 @@ export class Flag extends GameObject {
 
         if (o.pos.x > this.pos.x) {
 
-            // Useless since this object
-            // is destroyed right after this
-            this.active = true;
+            ev.audio.playSample(ev.audio.samples.checkpoint, 0.60);
 
             cb(ev); 
         }

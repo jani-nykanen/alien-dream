@@ -35,6 +35,7 @@ export class GameObject {
 
         this.takeCollision = true;
         this.inCamera = true;
+        this.killIfOutsideCamera = false;
     }
 
 

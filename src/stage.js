@@ -290,6 +290,7 @@ export class Stage {
                         objm.player.pos = new Vector2(x*16+8, (y+1)*16);
                     else {
 
+                        objm.player.boomerang.pos.x -= objm.player.pos.x - (x*16+8);
                         objm.player.pos.x = x*16 + 8;
                     }
 

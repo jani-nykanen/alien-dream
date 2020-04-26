@@ -19,8 +19,10 @@
     "tilemaps" : [
         {"name": "map1",  "path": "1.tmx"},
         {"name": "map2",  "path": "2.tmx"},
+        {"name": "map3",  "path": "3.tmx"},
         {"name": "background",  "path": "background.tmx"},
         {"name": "background2",  "path": "background2.tmx"},
+        {"name": "background3",  "path": "background3.tmx"},
         {"name": "collision",  "path": "collision.tmx"}
     ],
 
@@ -36,6 +38,8 @@
         {"name": "breakWall",  "path": "break.wav"},
         {"name": "boomerang",  "path": "throw.wav"},
         {"name": "heart",  "path": "heart.wav"},
-        {"name": "life",  "path": "life.wav"}
+        {"name": "life",  "path": "life.wav"},
+        {"name": "checkpoint",  "path": "checkpoint.wav"},
+        {"name": "bullet",  "path": "bullet.wav"}
     ]
 }

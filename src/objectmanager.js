@@ -151,7 +151,7 @@ export class ObjectManager {
 
             if (o.inCamera) {
 
-                o.checkPlayer(this.player);
+                o.checkPlayer(this.player, ev);
                 o.checkCamera(cam);
             }
             o.update(ev);
