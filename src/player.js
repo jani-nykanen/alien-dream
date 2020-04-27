@@ -341,14 +341,14 @@ export class Player extends GameObject {
 
 
     // Hurt
-    hurt(amount, dir, ev) {
+    hurt(amount, dir, ev, instantKill) {
 
         const KNOCKBACK_JUMP = -3.0;
         const HURT_TIME = 120;
         const KNOCKBACK_SPEED = 2.0;
 
         if (this.dying || !this.exist ||
-            this.hurtTimer > 0) return;
+            (!instantKill && this.hurtTimer > 0)) return;
 
         ev.audio.playSample(ev.audio.samples.hurt, 0.40);
 
@@ -387,7 +387,7 @@ export class Player extends GameObject {
 
         if (px+pw > x && py+ph > y && px < x+w && py < y+h) {
 
-            this.hurt(instantKill ? 3 : 1, null, ev);
+            this.hurt(instantKill ? 3 : 1, null, ev, instantKill);
 
             return true;
         }
