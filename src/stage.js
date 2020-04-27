@@ -267,6 +267,12 @@ export class Stage {
         // Border collisions
         o.wallCollision(0, 0, this.height*16, -1, ev);
         o.wallCollision(this.width*16, 0, this.height*16, 1, ev);
+
+        if (o.hurtCollision != undefined) {
+
+            o.hurtCollision(0, this.height*16, 
+                this.width*16, 256, ev, true);
+        }
     }
 
 

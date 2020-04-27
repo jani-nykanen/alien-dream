@@ -374,9 +374,10 @@ export class Player extends GameObject {
 
 
      // Hurt collision
-     hurtCollision(x, y, w, h, ev) {
+     hurtCollision(x, y, w, h, ev, instantKill) {
 
-        if (this.dying || !this.exist || this.hurtTimer > 0) 
+        if (this.dying || !this.exist || 
+            (!instantKill && this.hurtTimer > 0))
             return false;
 
         let px = this.pos.x - this.center.x - this.colbox.x/2;
@@ -386,7 +387,7 @@ export class Player extends GameObject {
 
         if (px+pw > x && py+ph > y && px < x+w && py < y+h) {
 
-            this.hurt(1, null, ev);
+            this.hurt(instantKill ? 3 : 1, null, ev);
 
             return true;
         }
