@@ -70,7 +70,7 @@ export class Game {
     // Activate the scene
     activate(param, ev) {
 
-        this.stage = new Stage(ev.assets, 1);
+        this.stage = new Stage(ev.assets, 4);
         this.hud = new HUD();
         this.objm = new ObjectManager();
         this.stage.parseObjects(this.objm);
