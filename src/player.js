@@ -195,6 +195,7 @@ export class Player extends GameObject {
 
         this.flip = Flip.None;
         this.canJump = false;
+        this.crouching = false;
         this.exist = true;
 
         this.boomerang = new Boomerang();
@@ -253,26 +254,38 @@ export class Player extends GameObject {
         const HORIZONTAL_TARGET = 1.0;
         const GRAVITY = 2.5;
         const JUMP_TIME = 22;
+        const CROUCH_DELTA = 0.75;
+        const BASE_HITBOX_Y = 20;
+
+        this.hitbox.y = BASE_HITBOX_Y * (this.crouching ? 0.5 : 1);
+        this.center.y = this.hitbox.y/2;
 
         // Determine target speed
         this.target.x = 0.0;
         this.target.y = GRAVITY;
 
-         // Update boomerang
-         this.boomerang.update(ev);
-         this.boomerang.updateReturnPoint(
+        // Update boomerang
+        this.boomerang.update(ev);
+        this.boomerang.updateReturnPoint(
              this.pos.x, this.pos.y-8
-         );
+        );
 
-        
-        let s;
-        if (this.hurtTimer <= HURT_TIME) {
+
+        let s = ev.input.actions.fire1.state;
+        this.crouching = 
+            s != State.Pressed &&
+            this.canJump &&
+            this.hurtTimer <= HURT_TIME &&
+            ev.input.stick.y > CROUCH_DELTA;
+
+        if (!this.crouching &&
+            this.hurtTimer <= HURT_TIME) {
 
             // Horizontal movement
             this.target.x = ev.input.stick.x * HORIZONTAL_TARGET;
 
             // Check jumping
-            s = ev.input.actions.fire1.state;
+            
             if (this.stompMargin > 0 && 
                 (s & State.DownOrPressed) == 1) {
 
@@ -406,6 +419,13 @@ export class Player extends GameObject {
         if (this.hurtTimer > HURT_TIME) {
 
             this.spr.setFrame(1, 3);
+            return;
+        }
+
+        if (this.crouching) {
+
+            this.spr.setFrame(1, 4);
+
             return;
         }
 
