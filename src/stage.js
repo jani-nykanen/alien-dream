@@ -7,7 +7,7 @@
 
 import { negMod, clamp } from "./core/util.js";
 import { Coin, Heart, LifeUp } from "./collectable.js";
-import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet } from "./enemy.js";
+import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet, VerticalFireball1, VerticalFireball2 } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 import { Sprite } from "./core/sprite.js";
 import { newGameObject } from "./gameobject.js";
@@ -312,7 +312,7 @@ export class Stage {
                     objm.addFlag(x*16, y*16, false);
                     break;
 
-                // I'm starting to question the meaning of switch...
+                // TODO: Replace with 'if', please...
                 case 17:
                 case 18:
                 case 19:
@@ -324,11 +324,13 @@ export class Stage {
                 case 25:
                 case 26:
                 case 27:
+                case 28:
+                case 29:
                     objm.addEnemy( 
                         [Walker, Slime, Dog, 
                         ImpVertical, ImpHorizontal, SpikeyWalker,
-                        Jumper, Bird, Ghost, Flame, 
-                        Bullet] [t-17], 
+                        Jumper, Bird, Ghost, Flame, Bullet, 
+                        VerticalFireball1, VerticalFireball2] [t-17], 
                         x*16, y*16);
                     break;
 

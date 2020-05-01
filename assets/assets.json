@@ -41,6 +41,7 @@
         {"name": "coin",  "path": "coin.wav"},
         {"name": "breakWall",  "path": "break.wav"},
         {"name": "boomerang",  "path": "throw.wav"},
+        {"name": "fireball",  "path": "fireball.wav"},
         {"name": "heart",  "path": "heart.wav"},
         {"name": "life",  "path": "life.wav"},
         {"name": "checkpoint",  "path": "checkpoint.wav"},

@@ -240,10 +240,12 @@ export class GameObject {
     // Is in camera
     checkIfInCamera(cam) {
 
-        let topx = this.pos.x+this.center.x - this.spr.width/2;
-        let topy = this.pos.y+this.center.y - this.spr.height/2;
-        let bottomx = topx + this.spr.width;
-        let bottomy = topy + this.spr.height;
+        const MARGIN = 8;
+
+        let topx = this.pos.x+this.center.x - this.spr.width/2 - MARGIN;
+        let topy = this.pos.y+this.center.y - this.spr.height/2 - MARGIN;
+        let bottomx = topx + this.spr.width + MARGIN*2;
+        let bottomy = topy + this.spr.height + MARGIN*2;
 
         this.inCamera = (bottomx >= cam.topCorner.x &&
             bottomy >= cam.topCorner.y &&

@@ -727,3 +727,143 @@ export class Bullet extends Enemy {
         this.kill(ev);
     }
 }
+
+
+export class VerticalFireball1 extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.startPos = this.pos.clone();
+
+        this.spr.setFrame(12, 0);
+
+        this.colbox.x = 8;
+        this.colbox.y = 8;
+
+        this.friction.y = 0.05;
+
+        this.speedSet = false;
+        this.harmful = true;
+        this.immortal = true;
+    }
+
+
+    checkCamera(cam) {
+
+        if (!this.speedSet) {
+
+            this.pos.y = cam.topCorner.y-12;
+        }
+    }
+
+
+    checkPlayer(o, ev) {
+
+        const DIST = 64;
+        const GRAVITY = 1.5;
+
+        if (!this.speedSet &&
+            Math.abs(o.pos.x - this.pos.x) < DIST) {
+
+            this.speed.y = GRAVITY;
+            this.target.y = GRAVITY;
+            this.speedSet = true;
+
+            ev.audio.playSample(ev.audio.samples.fireball, 0.70);
+        }
+
+    }
+
+
+    // Logic
+    updateLogic(ev) {  }
+
+
+    // Animate
+    animate(ev) {
+
+        this.spr.animate(this.spr.row, 0, 3, 5, ev.step);
+    }
+
+
+    floorEvent(ev) {
+
+        this.kill(ev);
+    }
+}
+
+
+export class VerticalFireball2 extends Enemy {
+
+    constructor(x, y) {
+
+        super(x, y);
+
+        this.startPos = this.pos.clone();
+
+        this.spr.setFrame(12, 4);
+
+        this.colbox.x = 8;
+        this.colbox.y = 8;
+
+        this.friction.y = 0.05;
+
+        this.speedSet = false;
+        this.harmful = true;
+        this.immortal = true;
+
+        this.flip = Flip.Vertical;
+    }
+
+
+    checkPlayer(o, ev) {
+
+        const DIST = 64;
+        const JUMP = -2.75;
+
+        if (!this.speedSet &&
+            Math.abs(o.pos.x - this.pos.x) < DIST) {
+
+            this.speed.y = JUMP;
+            this.speedSet = true;
+
+            ev.audio.playSample(ev.audio.samples.fireball, 0.70);
+        }
+
+    }
+
+
+    // Logic
+    updateLogic(ev) { 
+
+        const GRAVITY = 2.0;
+
+        if (!this.speedSet) return;
+
+        this.target.y = GRAVITY;
+    }
+
+
+    // Animate
+    animate(ev) {
+
+        if (!this.speedSet) return;
+
+        this.spr.animate(this.spr.row, 0, 3, 5, ev.step);
+
+        this.flip = this.speed.y < 0 ? Flip.Vertical : Flip.None;
+    }
+
+
+    floorEvent(ev) {
+
+        this.kill(ev);
+    }
+
+    ceilingEvent(ev) {
+
+        this.kill(ev);
+    }
+}
