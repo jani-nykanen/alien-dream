@@ -514,6 +514,8 @@ export class Player extends GameObject {
 
         if (this.dying || !this.exist) return;
 
+        ev.audio.playSample(ev.audio.samples.die, 0.50);
+
         this.throwAnimTimer = 0;
         this.hurtTimer = 0;
 
