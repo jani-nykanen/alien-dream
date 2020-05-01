@@ -7,7 +7,8 @@
 import { createScoreString } from "./core/util.js";
 
 
-const INITIAL_TIME = 300;
+const INITIAL_TIME = 150;
+const PANIC_TIME = 30;
 
 
 export class HUD {
@@ -82,8 +83,23 @@ export class HUD {
             80, 144-8, 0, 0);
 
         // Draw time
+        let tstr = "&";
+        if (this.time <= 0 ||
+            this.time >= PANIC_TIME-1 ||
+            Math.floor(this.time*2) % 2 == 0) {
+
+            tstr += createScoreString(Math.ceil(Math.max(0, this.time)), 3);
+        }
         c.drawText(c.bitmaps.fontSmall, 
-            "&" + createScoreString(Math.ceil(this.time), 3), 
+            tstr, 
             120, 144-8, 0, 0);
+
+        // "TIME UP"
+        if (this.time <= 0) {
+
+            c.drawText(c.bitmaps.font, "TIME UP!", 
+                c.width/2, c.height/2-12,
+                0, 0, true);
+        }
     }
 }

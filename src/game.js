@@ -87,7 +87,11 @@ export class Game {
     // Update
     update(ev) {
 
-        if (ev.tr.active) return;
+        if (ev.tr.active) {
+
+            this.objm.updateCamOnly(this.cam, this.stage, ev);
+            return;
+        }
 
         let s = ev.input.actions.start.state;
         if (s == State.Pressed) {

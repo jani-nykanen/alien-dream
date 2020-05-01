@@ -113,6 +113,13 @@ export class ObjectManager {
     }
 
 
+    // Update the camera only
+    updateCamOnly(cam, stage, ev) {
+
+        cam.followObject(this.player, stage, ev);
+    }
+
+
     // Update
     update(stage, cam, hud, nextCB, ev) {
 
@@ -123,6 +130,10 @@ export class ObjectManager {
             stage.objectCollision(this.player, this, ev);
             stage.objectCollision(this.player.boomerang, null, ev);
             cam.followObject(this.player, stage, ev);
+        }
+        if (hud.time <= 0) {
+
+            this.player.kill(ev);
         }
 
         // Update collectables

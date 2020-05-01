@@ -512,6 +512,8 @@ export class Player extends GameObject {
 
         const DEATH_JUMP = -2.5;
 
+        if (this.dying || !this.exist) return;
+
         this.throwAnimTimer = 0;
         this.hurtTimer = 0;
 
