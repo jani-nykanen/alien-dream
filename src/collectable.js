@@ -84,7 +84,9 @@ export class Collectable extends GameObject {
         ev.audio.playSample(
             [ev.audio.samples.coin, 
             ev.audio.samples.heart, 
-            ev.audio.samples.life] [this.spr.row], 
+            ev.audio.samples.life,
+            ev.audio.samples.coin,
+            ev.audio.samples.coin] [this.spr.row], 
             0.40);
     
     }
@@ -122,6 +124,39 @@ export class Coin extends Collectable {
         ++ o.coins;
     }
 }
+
+
+export class SilverCoin extends Collectable {
+
+
+    constructor(x, y) {
+
+        super(x, y, 3);
+    }
+
+
+    deathEvent(o, ev) {
+
+        o.coins += 5;
+    }
+}
+
+
+export class RainbowCoin extends Collectable {
+
+
+    constructor(x, y) {
+
+        super(x, y, 4);
+    }
+
+
+    deathEvent(o, ev) {
+
+        o.coins += 10;
+    }
+}
+
 
 
 export class Heart extends Collectable {

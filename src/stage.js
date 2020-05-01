@@ -6,7 +6,7 @@
  */
 
 import { negMod, clamp } from "./core/util.js";
-import { Coin, Heart, LifeUp } from "./collectable.js";
+import { Coin, Heart, LifeUp, SilverCoin, RainbowCoin } from "./collectable.js";
 import { Walker, Slime, Dog, ImpVertical, ImpHorizontal, SpikeyWalker, Jumper, Bird, Ghost, Flame, Bullet, VerticalFireball1, VerticalFireball2 } from "./enemy.js";
 import { Vector2 } from "./core/vector.js";
 import { Sprite } from "./core/sprite.js";
@@ -243,7 +243,8 @@ export class Stage {
                         ev.audio.playSample(ev.audio.samples.breakWall, 0.45);
 
                         objm.spawnItem(
-                            [Coin, LifeUp, Heart] [clamp(this.objects.getValue(x, y, false)-258, 0, 2)],
+                            [Coin, LifeUp, Heart, Coin, SilverCoin, RainbowCoin] 
+                            [clamp(this.objects.getValue(x, y, false)-258, 0, 5)],
                             x*16+8, y*16)
                     }
                 }
@@ -310,6 +311,13 @@ export class Stage {
                 // Flag
                 case 5:
                     objm.addFlag(x*16, y*16, false);
+                    break;
+
+                // Initial player
+                case 8:
+                    
+                    objm.player.pos = new Vector2(x*16+8, (y+1)*16);
+                    objm.player.startInitialAnimation();
                     break;
 
                 // TODO: Replace with 'if', please...

@@ -30,6 +30,13 @@ export class HUD {
         this.time = INITIAL_TIME;
     }
 
+    
+    // Add time
+    addTime(count) {
+
+        this.time = Math.min(this.time + count, INITIAL_TIME);
+    }
+
 
     // Update
     update(ev) {

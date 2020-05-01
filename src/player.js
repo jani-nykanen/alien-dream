@@ -210,6 +210,34 @@ export class Player extends GameObject {
         this.isPlayer = true;
 
         this.deathPos = new Vector2();
+
+        this.initialAnimation = false;
+        this.animTimer = 0;
+    }
+
+
+    // Start initial animation
+    startInitialAnimation() {
+
+        this.initialAnimation = true;
+        this.animTimer = 0;
+    }
+
+
+    // Update initial animation
+    updateInitialAnimation(ev) {
+
+        const END_TIME = 24;
+
+        if (this.animTimer <= 0) {
+
+            ev.audio.playSample(ev.audio.samples.pipe, 0.70);
+        }
+        
+        if ((this.animTimer += ev.step) >= END_TIME) {
+
+            this.initialAnimation = false;
+        }
     }
 
 
@@ -247,6 +275,21 @@ export class Player extends GameObject {
     }
 
 
+    // Check stats
+    checkStats(ev) {
+
+        const LIFE_UP_LIMIT = 50;
+
+        while (this.coins >= LIFE_UP_LIMIT) {
+
+            ev.audio.playSample(ev.audio.samples.life, 0.50);
+
+            ++ this.lives;
+            this.coins -= LIFE_UP_LIMIT;
+        }
+    }
+
+
     // Update player logic
     updateLogic(ev) {
 
@@ -260,6 +303,12 @@ export class Player extends GameObject {
         this.hitbox.y = BASE_HITBOX_Y * (this.crouching ? 0.5 : 1);
         this.center.y = this.hitbox.y/2;
 
+        if (this.initialAnimation) {
+
+            this.updateInitialAnimation(ev);
+            return;
+        }
+
         // Determine target speed
         this.target.x = 0.0;
         this.target.y = GRAVITY;
@@ -270,6 +319,7 @@ export class Player extends GameObject {
              this.pos.x, this.pos.y-8
         );
 
+        this.checkStats(ev);
 
         let s = ev.input.actions.fire1.state;
         this.crouching = 
@@ -476,10 +526,28 @@ export class Player extends GameObject {
     }
 
 
+    // Draw initial animation
+    drawInitialAnimation(c) {
+
+        let h = this.animTimer;
+
+        c.drawBitmapRegion(c.bitmaps.player,
+            32, 48, 16, h, 
+            Math.floor(this.pos.x)-8,
+            Math.floor(this.pos.y) - h);
+    }
+
+
     // Draw 
     draw(c) {
 
         if (!this.exist) return;
+
+        if (this.initialAnimation) {
+
+            this.drawInitialAnimation(c);
+            return;
+        }
         
         // Draw the base sprite
         let frame = this.spr.frame;

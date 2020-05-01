@@ -64,13 +64,18 @@ export class Game {
         this.cam.getTopCorner();
         this.cam.restrict(this.stage);
         this.objm.initialCameraCheck(this.cam);
+
+        this.hud.addTime(100);
     }
 
 
     // Activate the scene
     activate(param, ev) {
 
-        this.stage = new Stage(ev.assets, 5);
+        ev.tr.activate(false, TransitionType.Fade,
+            2.0, null, 6.2);
+
+        this.stage = new Stage(ev.assets, 1);
         this.hud = new HUD();
         this.objm = new ObjectManager();
         this.stage.parseObjects(this.objm);
@@ -101,7 +106,7 @@ export class Game {
         if (this.objm.isPlayerDead()) {
 
             ev.tr.activate(true, TransitionType.Fade,
-                2.0, (ev) => this.reset(), 3);
+                2.0, (ev) => this.reset(), 6.2);
         }
     }
 

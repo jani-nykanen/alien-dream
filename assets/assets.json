@@ -45,6 +45,7 @@
         {"name": "heart",  "path": "heart.wav"},
         {"name": "life",  "path": "life.wav"},
         {"name": "checkpoint",  "path": "checkpoint.wav"},
+        {"name": "pipe",  "path": "pipe.wav"},
         {"name": "bullet",  "path": "bullet.wav"}
     ]
 }
