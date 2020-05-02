@@ -12,6 +12,7 @@ import { HUD } from "./hud.js";
 import { ObjectManager } from "./objectmanager.js";
 import { TransitionType } from "./core/transition.js";
 import { State } from "./core/input.js";
+import { RGB } from "./core/vector.js";
 
 
 export class Game {
@@ -69,13 +70,24 @@ export class Game {
     }
 
 
+    // Trigger the ending sequence
+    triggerEnding(ev) {
+
+        ev.tr.activate(true, TransitionType.Fade,
+            0.25, (ev) => {
+
+                throw "Not yet implementd."
+            }, 6.2, new RGB(255, 255, 255));
+    }
+
+
     // Activate the scene
     activate(param, ev) {
 
         ev.tr.activate(false, TransitionType.Fade,
             2.0, null, 6.2);
 
-        this.stage = new Stage(ev.assets, 1);
+        this.stage = new Stage(ev.assets, 5);
         this.hud = new HUD();
         this.objm = new ObjectManager();
         this.stage.parseObjects(this.objm);
@@ -103,6 +115,7 @@ export class Game {
 
         this.objm.update(this.stage, this.cam, this.hud, 
             (ev) => this.nextStage(ev),
+            (ev) => this.triggerEnding(ev),
             ev);
         this.hud.update(ev);
         this.stage.update(ev);

@@ -121,14 +121,14 @@ export class ObjectManager {
 
 
     // Update
-    update(stage, cam, hud, nextCB, ev) {
+    update(stage, cam, hud, nextCB, endingCB, ev) {
 
         // Update player
         this.player.update(ev);
         if (!this.player.dying && this.player.exist) {
 
             stage.objectCollision(this.player, this, ev);
-            stage.objectCollision(this.player.boomerang, null, ev);
+            stage.objectCollision(this.player.boomerang, null, ev, endingCB);
             cam.followObject(this.player, stage, ev);
         }
         if (hud.time <= 0) {

@@ -39,6 +39,8 @@ class Boomerang extends GameObject {
         this.returnPoint = new Vector2(0, 0);
         this.startSpeed = new Vector2(0, 0);
         this.launchSpeed = 0.0;
+
+        this.isBoomerang = true;
     }
 
 

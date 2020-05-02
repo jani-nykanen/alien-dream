@@ -184,7 +184,7 @@ export class Stage {
 
 
     // Object collision
-    objectCollision(o, objm, ev) {
+    objectCollision(o, objm, ev, endingCB) {
 
         if (!o.exist || o.dying) return;
 
@@ -193,10 +193,11 @@ export class Stage {
 
         const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15, 16];
         const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15, 16];
-        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15, 16];
+        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15, 16, 18];
         const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15, 16];
         const SPECIAL_1 = [15];
         const SPECIAL_2 = [16];
+        const SPECIAL_3 = [18];
         const HURT = [17];
 
         let startx = Math.floor(o.pos.x / 16) - MARGIN;
@@ -250,7 +251,14 @@ export class Stage {
                 }
                 if (WALL_LEFT.includes(sindex)) {
 
-                    o.wallCollision(x*16, y*16, 16, 1, ev);
+                    if (o.wallCollision(x*16, y*16, 16, 1, ev) &&
+                        o.isBoomerang &&
+                        SPECIAL_3.includes(sindex) &&
+                        endingCB != undefined) {
+
+                        endingCB(ev);
+                        return;
+                    }
                 }
                 if (WALL_RIGHT.includes(sindex)) {
 
