@@ -13,6 +13,7 @@ import { ObjectManager } from "./objectmanager.js";
 import { TransitionType } from "./core/transition.js";
 import { State } from "./core/input.js";
 import { RGB } from "./core/vector.js";
+import { Ending } from "./ending.js";
 
 
 export class Game {
@@ -73,11 +74,20 @@ export class Game {
     // Trigger the ending sequence
     triggerEnding(ev) {
 
-        ev.tr.activate(true, TransitionType.Fade,
-            0.25, (ev) => {
+        this.stage.missileTileShift();
+        ev.tr.activate(true, TransitionType.Empty, 2.0,
+            (ev) => {
 
-                throw "Not yet implementd."
-            }, 6.2, new RGB(255, 255, 255));
+                ev.tr.disable();
+                ev.audio.playSample(ev.audio.samples.explosion, 0.80);
+
+                ev.tr.activate(true, TransitionType.Fade,
+                    1.0, (ev) => {
+
+                        ev.tr.speed = 2.0;
+                        ev.changeScene(Ending);
+                    }, 6.2, new RGB(255, 255, 255));
+        });
     }
 
 
@@ -87,7 +97,7 @@ export class Game {
         ev.tr.activate(false, TransitionType.Fade,
             2.0, null, 6.2);
 
-        this.stage = new Stage(ev.assets, 5);
+        this.stage = new Stage(ev.assets, 1);
         this.hud = new HUD();
         this.objm = new ObjectManager();
         this.stage.parseObjects(this.objm);

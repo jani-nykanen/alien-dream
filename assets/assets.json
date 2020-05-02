@@ -47,6 +47,7 @@
         {"name": "checkpoint",  "path": "checkpoint.wav"},
         {"name": "pipe",  "path": "pipe.wav"},
         {"name": "bullet",  "path": "bullet.wav"},
+        {"name": "explosion",  "path": "explosion.wav"},
 
         {"name": "die",  "path": "die.ogg"}
     ]

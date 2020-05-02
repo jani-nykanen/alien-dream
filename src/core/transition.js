@@ -84,8 +84,8 @@ export class Transition {
 
             if ((this.fadeIn = !this.fadeIn) == false) {
 
-                this.cb(ev);
                 this.timer += TRANSITION_TIME;
+                this.cb(ev);
             }
             else {
 
@@ -99,7 +99,7 @@ export class Transition {
     // Draw transition
     draw(c) {
 
-        if (!this.active || this.delayTimer > 0 || this.mode == -1) 
+        if (!this.active || this.mode == -1) 
             return;
 
         let t = this.getScaledTime();

@@ -148,6 +148,28 @@ export class Stage {
         this.resetPlayer = true;
     }
 
+    
+    // Shift the certain missile tiles
+    missileTileShift() {
+
+        let t;
+        for (let y = 0; y < this.height; ++ y) {
+
+            for (let x = 0; x < this.width; ++ x) {
+
+                t = this.getSolidIndex(x, y) -1;
+                if (t == 18) {
+
+                    this.base.data[y * this.width + x] += 2;
+                }    
+                else if (t == 19) {
+
+                    this.base.data[y * this.width + x] += 16;
+                } 
+            }
+        }
+    }
+
 
     // Switch to next
     switchNext(assets) {
@@ -193,11 +215,11 @@ export class Stage {
 
         const FLOOR = [0, 4, 6, 7, 10, 11, 13, 14, 15, 16];
         const CEILING = [2, 4, 8, 9, 11, 12, 13, 14, 15, 16];
-        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15, 16, 18];
+        const WALL_LEFT = [3, 5, 6, 9, 10, 12, 13, 14, 15, 16, 18, 19];
         const WALL_RIGHT = [1, 5, 7, 8, 10, 11, 12, 14, 15, 16];
         const SPECIAL_1 = [15];
         const SPECIAL_2 = [16];
-        const SPECIAL_3 = [18];
+        const SPECIAL_3 = [18, 19];
         const HURT = [17];
 
         let startx = Math.floor(o.pos.x / 16) - MARGIN;
