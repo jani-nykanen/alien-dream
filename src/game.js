@@ -14,6 +14,7 @@ import { TransitionType } from "./core/transition.js";
 import { State } from "./core/input.js";
 import { RGB } from "./core/vector.js";
 import { Ending } from "./ending.js";
+import { GameOver } from "./gameover.js";
 
 
 export class Game {
@@ -42,7 +43,13 @@ export class Game {
 
 
     // Reset
-    reset() {
+    reset(ev) {
+
+        if (this.hud.lives <= 0) {
+
+            ev.changeScene(GameOver);
+            return;
+        }
 
         this.objm.reset();
         this.stage.reset();
@@ -133,7 +140,7 @@ export class Game {
         if (this.objm.isPlayerDead()) {
 
             ev.tr.activate(true, TransitionType.Fade,
-                2.0, (ev) => this.reset(), 6.2);
+                2.0, (ev) => this.reset(ev), 6.2);
         }
     }
 

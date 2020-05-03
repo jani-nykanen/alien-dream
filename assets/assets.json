@@ -11,7 +11,10 @@
         {"name": "enemies",  "path": "enemies.png"},
         {"name": "boomerang",  "path": "boomerang.png"},
         {"name": "player",  "path": "player.png"},
-        {"name": "flag",  "path": "flag.png"}
+        {"name": "flag",  "path": "flag.png"},
+
+        {"name": "gameover",  "path": "gameover.png"}
+
     ],
 
 
