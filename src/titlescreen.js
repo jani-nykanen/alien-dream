@@ -41,11 +41,12 @@ export class TitleScreen {
             this.flickerTimer -= ev.step;
             if (this.flickerTimer <= 0.0) {
 
-                ev.tr.activate(true, TransitionType.Fade,
+                ev.tr.activate(true, TransitionType.CircleOutside,
                     2.0, (ev) => {
                         ev.changeScene(Game)
-                    }, 6.2);
+                    });
             }
+            return;
         }
     
         this.timer = (this.timer += TIME_SPEED) % 1.0;

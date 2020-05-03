@@ -7,6 +7,7 @@
 import { Player } from "./player.js";
 import { Coin } from "./collectable.js";
 import { Flag } from "./flag.js";
+import { Vector2 } from "./core/vector.js";
 
 
 export class ObjectManager {
@@ -192,6 +193,17 @@ export class ObjectManager {
 
     // Is the player dead
     isPlayerDead = () => !this.player.exist;
+
+
+    // Get relative player position
+    // (w.r.t to camera)
+    getRelativePlayerPosition(cam) {
+
+        let px = this.player.pos.x % cam.width;
+        let py = this.player.pos.y % cam.height;
+
+        return new Vector2(px - cam.width/2, py - cam.height/2);
+    }
 
 
     // Draw

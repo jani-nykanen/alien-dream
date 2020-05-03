@@ -15,6 +15,7 @@ export const TransitionType = {
 
     Empty: -1,
     Fade: 0,
+    CircleOutside: 1,
 }
 
 
@@ -104,6 +105,12 @@ export class Transition {
 
         let t = this.getScaledTime();
 
+        let maxRadius = 0;
+        let r;
+
+        let cx = c.width/2;
+        let cy = c.height/2;
+
         switch(this.mode) {
 
         case TransitionType.Fade:
@@ -116,6 +123,29 @@ export class Transition {
             c.setColor(this.color.r, this.color.g, this.color.b, t);
             c.fillRect(0, 0, c.width, c.height);
             
+            break;
+
+        case TransitionType.CircleOutside:
+
+            if (this.param != null &&
+                this.param.x != undefined &&
+                this.param.y != undefined) {
+
+                cx += this.param.x;
+                cy += this.param.y;
+            }
+            maxRadius = Math.max(
+                Math.hypot(cx, cy),
+                Math.hypot(c.width-cx, cy),
+                Math.hypot(c.width-cx, c.height-cy),
+                Math.hypot(cx, c.height-cy)
+            );
+            
+            r = (1-t) * maxRadius;
+
+            c.setColor(this.color.r, this.color.g, this.color.b);
+            c.fillCircleOutside(r, cx, cy);
+
             break;
 
         default:
