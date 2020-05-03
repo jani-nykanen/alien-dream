@@ -1,5 +1,5 @@
 import { Menu, MenuButton } from "./menu.js";
-import { Game } from "./game.js";
+import { CreatedBy } from "./createdby.js";
 
 /**
  * "Enable audio" scene
@@ -20,14 +20,14 @@ export class AudioIntro {
 
                         ev.audio.toggle(true);
                         ev.audio.setGlobalSampleVolume(0.70);
-                        ev.changeScene(Game);
+                        ev.changeScene(CreatedBy);
                     }
                 ),
                 new MenuButton(
                     "NO", (ev) => {
 
                         ev.audio.toggle(false);
-                        ev.changeScene(Game);
+                        ev.changeScene(CreatedBy);
                     }
                 )
             ]);

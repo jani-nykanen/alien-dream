@@ -16,6 +16,7 @@ export class GamePadListener {
         this.stick = new Vector2();
 
         this.buttons = new Array ();
+        this.anyPressed = true;
 
         this.pad = null;
         this.index = 0;
@@ -62,6 +63,8 @@ export class GamePadListener {
     // Update buttons
     updateButtons(pad) {
 
+        this.anyPressed = false;
+
         if (pad == null) {
 
             for (let i = 0; i < this.buttons.length; ++ i) {
@@ -89,7 +92,7 @@ export class GamePadListener {
                     this.buttons[i] == State.Released) {
                     
                     this.buttons[i] = State.Pressed;
-                    // this.anyPressed = true;
+                    this.anyPressed = true;
                 }
                 else {
 

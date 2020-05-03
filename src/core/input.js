@@ -145,7 +145,7 @@ export class InputManager {
         const EPS1 = 0.01;
         const EPS2 = 0.1;
 
-        this.anyPressed = false;
+        this.anyPressed = this.pad.anyPressed;
 
         // Update actions
         for (let k in this.actions) {

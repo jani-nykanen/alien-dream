@@ -13,7 +13,9 @@
         {"name": "player",  "path": "player.png"},
         {"name": "flag",  "path": "flag.png"},
 
-        {"name": "gameover",  "path": "gameover.png"}
+        {"name": "gameover",  "path": "gameover.png"},
+        {"name": "logo",  "path": "logo.png"},
+        {"name": "creator",  "path": "creator.png"}
 
     ],
 
@@ -51,6 +53,7 @@
         {"name": "pipe",  "path": "pipe.wav"},
         {"name": "bullet",  "path": "bullet.wav"},
         {"name": "explosion",  "path": "explosion.wav"},
+        {"name": "start",  "path": "start.wav"},
 
         {"name": "die",  "path": "die.ogg"}
     ]
