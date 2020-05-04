@@ -26,11 +26,14 @@ export class ObjectManager {
     reset(soft) {
 
         let lives;
+        let coins;
         if (!soft) {
 
+            coins = this.player.coins;
             lives = this.player.lives;
             this.player = new Player(0, 0);
             this.player.lives = lives;
+            this.player.coins = coins;
         }
 
         this.items = new Array();
@@ -196,7 +199,7 @@ export class ObjectManager {
         
         return !this.player.exist;
     }
-    
+
 
     // Get relative player position
     // (w.r.t to camera)
