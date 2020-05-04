@@ -142,6 +142,10 @@ export class Transition {
             );
             
             r = (1-t) * maxRadius;
+            if (this.param.z != undefined) {
+
+                r = Math.floor(r/this.param.z) * this.param.z; 
+            }
 
             c.setColor(this.color.r, this.color.g, this.color.b);
             c.fillCircleOutside(r, cx, cy);

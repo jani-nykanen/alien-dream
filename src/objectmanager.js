@@ -192,8 +192,11 @@ export class ObjectManager {
 
 
     // Is the player dead
-    isPlayerDead = () => !this.player.exist;
-
+    isPlayerDead() {
+        
+        return !this.player.exist;
+    }
+    
 
     // Get relative player position
     // (w.r.t to camera)

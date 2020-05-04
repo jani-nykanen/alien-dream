@@ -83,7 +83,7 @@ export class Runner {
     
         // Draw bar
         let w = (barWidth*t) | 0;
-        c.setColor(1);
+        c.setColor(255);
         c.fillRect(x, y, w, barHeight);
     }
 

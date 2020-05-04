@@ -216,7 +216,12 @@ export class InputManager {
 
 
     // Getters
-    isAnyPressed = () => this.anyPressed;
-    getKeyState = (key) => this.keyStates[key] | State.Up;
-    getMouseButtonState = (b) => this.mouse.buttons[b] | State.Up;
+    getKeyState(key) {
+
+        return this.keyStates[key] | State.Up;
+    }
+    getMouseButtonState(b) {
+        
+        return this.mouse.buttons[b] | State.Up;
+    }
 }

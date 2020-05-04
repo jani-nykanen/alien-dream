@@ -73,6 +73,81 @@ export class Vector2 {
 }
 
 
+export class Vector3 {
+
+
+    constructor(x, y, z) {
+
+        this.x = x == null ? 0 : x; 
+        this.y = y == null ? 0 : y;
+        this.z = z == null ? 0 : z;
+    }
+
+
+    // Normalize the vector
+    normalize() {
+
+        const EPS = 0.001;
+
+        let len = Math.hypot(this.x, this.y, this.z);
+        if (len < EPS) return;
+
+        this.x /= len;
+        this.y /= len;
+
+        return this;
+    }
+
+
+    // Return a (deep?) copy of the vector
+    clone() { return new Vector3(this.x, this.y, this.z); }
+
+
+    // Clone and normalize
+    cloneNormalized() {
+
+        return this.clone().normalize();
+    }
+
+
+    // Values as an array
+    asArray() {
+
+        return [this.x, this.y, this.z];
+    }
+
+
+    // Length
+    length() {
+
+        return Math.hypot(this.x, this.y, this.z);
+    }
+
+
+    // Multiply with a real number
+    scale(s) {
+
+        return new Vector3(this.x*s, this.y*s, this.z*s);
+    }
+
+
+    // Dot product
+    static dot(a, b) {
+
+        return a.x*b.x + a.y*b.y + a.z*b.z;
+    }
+
+
+    // Create from vector2
+    static fromVector2(v, z) {
+
+        return new Vector3(v.x, v.y, z);
+    }
+    
+
+}
+
+
 export class RGB {
 
 

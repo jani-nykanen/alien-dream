@@ -66,7 +66,10 @@ export class Collectable extends GameObject {
 
 
     // Animation when hidden
-    hiddenAnimation = (ev) => this.animate(ev);
+    hiddenAnimation(ev) {
+        
+        this.animate(ev);
+    }
     
     
     // Hostile collision

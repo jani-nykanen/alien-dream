@@ -8,6 +8,7 @@
 import { TransitionType } from "./core/transition.js";
 import { State } from "./core/input.js";
 import { Game } from "./game.js";
+import { Vector3 } from "./core/vector.js";
 
 
 export class TitleScreen {
@@ -44,7 +45,7 @@ export class TitleScreen {
                 ev.tr.activate(true, TransitionType.CircleOutside,
                     2.0, (ev) => {
                         ev.changeScene(Game)
-                    });
+                    }, new Vector3(0, 0, 8));
             }
             return;
         }

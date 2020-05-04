@@ -12,7 +12,7 @@ import { HUD } from "./hud.js";
 import { ObjectManager } from "./objectmanager.js";
 import { TransitionType } from "./core/transition.js";
 import { State } from "./core/input.js";
-import { RGB, Vector2 } from "./core/vector.js";
+import { RGB, Vector2, Vector3 } from "./core/vector.js";
 import { Ending } from "./ending.js";
 import { GameOver } from "./gameover.js";
 
@@ -101,8 +101,6 @@ export class Game {
     // Activate the scene
     activate(param, ev) {
 
-        
-
         this.stage = new Stage(ev.assets, 1);
         this.hud = new HUD();
         this.objm = new ObjectManager();
@@ -111,7 +109,9 @@ export class Game {
         this.initCamera();
 
         ev.tr.activate(false, TransitionType.CircleOutside,
-            1.0, null, this.objm.getRelativePlayerPosition(this.cam));
+            1.0, null, 
+            Vector3.fromVector2(this.objm.getRelativePlayerPosition(this.cam), 8)
+        );
     }
 
 
